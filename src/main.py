@@ -4,9 +4,9 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from core.config import settings
-from core.lifespan import lifespan
-from core.middleware import DBSessionMiddleware
+from src.core.config import settings
+from src.core.lifespan import lifespan
+from src.core.middleware import DBSessionMiddleware
 
 
 app = FastAPI(
