@@ -17,6 +17,9 @@ class Settings(BaseSettings, case_sensitive=True):
     POSTGRES_PORT: str = Field(alias="SMPR_POSTGRES_PORT")
     ECHO: bool = Field(alias="SMPR_ECHO")
 
+    # auth
+    PASSWORD_FILE: str = Field(alias="SMPR_PASSWORD_FILE")
+
     # App
     APPLICATION: str = Field(alias="SMPR_APPLICATION")
     ALLOWED_HOST: str = Field(alias="SMPR_ALLOWED_HOST")
