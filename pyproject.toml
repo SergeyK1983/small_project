@@ -5,7 +5,7 @@ description = "test"
 authors = [
     {name = "Serg"}
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.13,<4.0"
 dependencies = [
     "fastapi[standard] (>=0.135.3,<0.136.0)",
     "uvicorn (>=0.44.0,<0.45.0)",
@@ -18,7 +18,10 @@ dependencies = [
     "alembic (>=1.18.4,<2.0.0)",
     "sqladmin[full] (>=0.24.0,<0.25.0)",
     "argon2-cffi (>=25.1.0,<26.0.0)",
-    "pyjwt[crypto] (>=2.12.1,<3.0.0)"
+    "pyjwt[crypto] (>=2.12.1,<3.0.0)",
+    "loguru (>=0.7.3,<0.8.0)",
+    "typer (>=0.25.1,<0.26.0)",
+    "rich (>=15.0.0,<16.0.0)"
 ]
 
 
