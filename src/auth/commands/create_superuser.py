@@ -1,5 +1,5 @@
 from src.auth.repository.user_register_repository import UserRegisterRepo
-from src.auth.schemas.user_auth_schema import UserAuthSchema
+from src.auth.schemas.input.user_auth_schema import UserAuthSchema
 from src.auth.utils.password import password
 from src.core.database import db_helper
 

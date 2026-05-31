@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.exceptions import RepositoryDatabaseError, RepositoryError, RepositoryIntegrityError
 from src.auth.models.user import User
 from src.auth.repository.user_base_repository import UserBaseRepo
+from src.auth.schemas.output.user_base import UserBase
 
 from src.core.logger import logger
 
@@ -14,7 +15,7 @@ class UserRegisterRepo(UserBaseRepo):
     """Для регистрации пользователя"""
 
     @classmethod
-    async def __create(cls, username: str, query: Insert, db: AsyncSession) -> dict:
+    async def __create(cls, username: str, query: Insert, db: AsyncSession) -> UserBase:
         try:
             await db.execute(query)
             await db.commit()
@@ -34,10 +35,10 @@ class UserRegisterRepo(UserBaseRepo):
             raise RepositoryError("User create error, user must not be None")
 
         logger.success("Пользователь {name} зарегистрирован!", name=username)
-        return {**user_created}
+        return UserBase(**user_created)
 
     @classmethod
-    async def create_user(cls, username: str, password: str, db: AsyncSession) -> dict:
+    async def create_user(cls, username: str, password: str, db: AsyncSession) -> UserBase:
         """
         Запрос на создание пользователя.
         Args:
@@ -50,13 +51,11 @@ class UserRegisterRepo(UserBaseRepo):
             username=username,
             password=password,
         )
-        result: dict = await cls.__create(username, query, db)
+        result: UserBase = await cls.__create(username, query, db)
         return result
 
     @classmethod
-    async def create_superuser(
-        cls, username: str, password: str, db: AsyncSession
-    ) -> dict:
+    async def create_superuser(cls, username: str, password: str, db: AsyncSession) -> UserBase:
         """
         Запрос на создание суперпользователя.
         Args:
@@ -68,5 +67,5 @@ class UserRegisterRepo(UserBaseRepo):
         query = insert(User).values(
             username=username, password=password, is_superuser=True, is_active=True
         )
-        result: dict = await cls.__create(username, query, db)
+        result: UserBase = await cls.__create(username, query, db)
         return result

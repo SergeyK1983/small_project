@@ -51,3 +51,16 @@ class UserBaseRepo:
             logger.exception("Database error in query", extra={"query": str(query)})
             raise RepositoryDatabaseError("Database operation failed") from exp
         return result
+    
+    @classmethod
+    async def _is_exists_user_by_email(cls, email: str, db: AsyncSession) -> bool:
+        query: Select = select(exists().where(User.email.cast(String) == email))
+        try:
+            result: bool = await db.scalar(query)  # type: ignore
+        except IntegrityError as exp:
+            logger.exception("Integrity error in query", extra={"query": str(query)})
+            raise RepositoryIntegrityError("Integrity constraint violated") from exp
+        except DatabaseError as exp:
+            logger.exception("Database error in query", extra={"query": str(query)})
+            raise RepositoryDatabaseError("Database operation failed") from exp
+        return result
