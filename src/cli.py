@@ -11,9 +11,12 @@ app = typer.Typer()
 
 @app.command()
 def createsuperuser(
-        username: str = typer.Argument(..., help="Имя пользователя"),
-        pwd: str = typer.Argument(..., help="Пароль")
+        # username: str = typer.Argument(..., help="Имя пользователя"),
+        # pwd: str = typer.Argument(..., help="Пароль")
 ) -> None:
+    username = input("Введите имя пользователя: ")
+    pwd = input("Введите пароль: ")
+
     msg: str = asyncio.run(create_superuser(username, pwd))
     print(f"[bold green]{msg}[/bold green]")
     return
