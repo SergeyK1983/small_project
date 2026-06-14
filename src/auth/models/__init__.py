@@ -1,5 +1,5 @@
-from src.auth.models import user
+from src.auth.models import user, black_list_token
 
 __all__ = [
-    "user",
+    "user", "black_list_token",
 ]

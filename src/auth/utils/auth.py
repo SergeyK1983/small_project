@@ -1,11 +1,10 @@
-from typing import Annotated, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
-from fastapi import Request, Depends
+from fastapi import Request
 
 from src.auth.exceptions import AuthHTTPException, UserHTTPException
 from src.auth.repository.user_registered_repository import UserRegisteredRepo
 from src.auth.schemas.output.user_base import UserBase
-from src.auth.utils.token import TypeHeaderToken, app_token
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,7 +23,7 @@ class Authentication:
         Returns:
             None
         """
-        user: UserBase | None = await UserRegisteredRepo.read_one_user_by_id(self.payload.get("uid", 0), self.db)
+        user: UserBase | None = await UserRegisteredRepo.read_one_user_by_id(self.payload.get("uid", uuid4()), self.db)
         if not user:
             UserHTTPException.raise_http_404()
         self.request.state.user = user
