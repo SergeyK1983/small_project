@@ -52,6 +52,7 @@ class UserRegisterRepo(UserBaseRepo):
             username=username,
             email=email,
             password=password,
+            is_active=True
         )
         result: UserBase = await cls.__create(username, query, db)
         return result
@@ -72,6 +73,7 @@ class UserRegisterRepo(UserBaseRepo):
             email=email,
             password=password,
             is_superuser=True,
+            is_staff=True,
             is_active=True
         )
         result: UserBase = await cls.__create(username, query, db)

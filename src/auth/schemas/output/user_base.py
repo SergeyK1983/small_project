@@ -30,3 +30,9 @@ class UserBase(BaseModel):
             ])
         )
         return f_name
+
+
+class UserWithPassword(UserBase):
+    """ Пользователь с паролем """
+
+    password: Annotated[str, Field(description="Пароль пользователя")]
