@@ -28,7 +28,7 @@ async def register(
     """
     Регистрация пользователя в системе
     Args:
-        user: UserAuthSchema - User data
+        user: UserSignupSchema - User data
         db: AsyncSession
     Return:
         Registred user data

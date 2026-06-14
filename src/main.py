@@ -7,7 +7,8 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from src.auth.api.v1.api_router import router as auth_v1_router
 from src.core.config import settings
 from src.core.lifespan import lifespan
-from src.core.middleware import DBSessionMiddleware
+from src.core.middleware import DBSessionMiddleware, LoggingMiddleware
+from src.middleware.auth_middleware import AuthMiddleware
 
 
 app = FastAPI(
@@ -15,7 +16,9 @@ app = FastAPI(
 )
 
 # middleware
+app.add_middleware(LoggingMiddleware)
 app.add_middleware(SessionMiddleware, secret_key=settings.PASSWORD_FILE,)
+app.add_middleware(AuthMiddleware)
 app.add_middleware(DBSessionMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=2048, compresslevel=5)
 app.add_middleware(

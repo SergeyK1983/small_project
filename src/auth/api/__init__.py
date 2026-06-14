@@ -1,4 +1,4 @@
-from src.auth.api.v1 import api_router, signup, signin
+from src.auth.api.v1 import api_router, signup, signin, user_action
 
 
-__all__ = ["api_router", "signup", "signin"]
+__all__ = ["api_router", "signup", "signin", "user_action"]
