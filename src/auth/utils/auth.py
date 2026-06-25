@@ -1,17 +1,21 @@
 from typing import TYPE_CHECKING
-from uuid import UUID, uuid4
+from uuid import UUID
 from fastapi import Request
 
 from src.auth.exceptions import AuthHTTPException, UserHTTPException
+from src.auth.repository.black_token_repository import TokenRepo
 from src.auth.repository.user_registered_repository import UserRegisteredRepo
 from src.auth.schemas.output.user_base import UserBase
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
+    from src.auth.utils.token import Payload
 
 
 class Authentication:
-    def __init__(self, request: Request, payload: dict):
+    """ Аутентификация пользователя """
+
+    def __init__(self, request: Request, payload: "Payload"):
         self.request = request
         self.payload = payload
         self.db: "AsyncSession" = request.state.db
@@ -23,23 +27,20 @@ class Authentication:
         Returns:
             None
         """
-        user: UserBase | None = await UserRegisteredRepo.read_one_user_by_id(self.payload.get("uid", uuid4()), self.db)
+        user: UserBase | None = await UserRegisteredRepo.read_one_user_by_id(self.payload.uid, self.db)
         if not user:
             UserHTTPException.raise_http_404()
         self.request.state.user = user
         return None
     
-    async def _check_exist_token_black_list(self):
-        jti: UUID = self.payload.get("jti", uuid4())
+    async def _check_exist_token_black_list(self) -> None:
 
-        user = self.request.state.user
-        cache_token_jti = ""
+        jti: UUID = self.payload.jti
+        exists: bool = await TokenRepo.is_exists_black_token(jti=jti, db=self.db)
 
-        if user.username and hasattr(self.request.app.state, "redis_client"):
-            pass
-        
-        if cache_token_jti and cache_token_jti == str(jti):
+        if exists:
             AuthHTTPException.raise_http_401()
+        
         return
 
     async def is_authenticate(self) -> bool:

@@ -77,13 +77,13 @@ class Token:
         return encoded
 
     @staticmethod
-    def _decode_token(encoded: str) -> dict:
+    def _decode_token(encoded: str) -> Payload:
         if not encoded.startswith("JWT "):
              AuthHTTPException.raise_http_401()
 
         encoded = encoded.replace("JWT ", "")
         try:
-            payload = jwt.decode(jwt=encoded, key=settings.public_key, algorithms=[settings.ALGORITHM])
+            pl: dict = jwt.decode(jwt=encoded, key=settings.public_key, algorithms=[settings.ALGORITHM])
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             AuthHTTPException.raise_http_401()
         except jwt.InvalidTokenError:
@@ -91,6 +91,18 @@ class Token:
         except jwt.PyJWTError as exp:
             logger.error("PyJWTError: {}", str(exp))
             AuthHTTPException.raise_http_500()
+        
+        payload = Payload(
+            uid=pl["uid"],
+            sub=pl["sub"],
+            iss=pl["iss"],
+            exp=pl["exp"],
+            jti=pl["jti"],
+            iat=pl["iat"],
+            nbf=pl["nbf"],
+            type=pl["type"],
+        )
+
         return payload
 
     def get_access_token(self, user_id: UUID) -> str:
@@ -98,9 +110,9 @@ class Token:
         token: str = self._create_token(user_id, token_type)
         return token
 
-    def verify_access_token(self, token: str) -> dict:
+    def verify_access_token(self, token: str) -> Payload:
         payload = self._decode_token(token)
-        if payload.get("type") != TypeHeaderToken.ACCESS.name:
+        if payload.type != TypeHeaderToken.ACCESS.name:
             AuthHTTPException.raise_http_401()
         return payload
 
