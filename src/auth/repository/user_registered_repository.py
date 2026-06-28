@@ -9,6 +9,7 @@ from src.auth.repository.user_base_repository import (
     RepositoryDatabaseError, RepositoryIntegrityError, UserBaseRepo,
 )
 from src.auth.schemas.output.user_base import UserBase
+from src.auth.schemas.output.user_delete import UserDeleted
 from src.core.logger import logger
 
 
@@ -46,7 +47,7 @@ class UserRegisteredRepo(UserBaseRepo):
         return UserBase(**user_map)
 
     @classmethod
-    async def is_unique_user(cls, username: str | None, email: str | None, db: AsyncSession) -> bool:
+    async def is_unique_user(cls, db: AsyncSession, username: str | None = None, email: str | None = None) -> bool:
         """
         Проверка на уникальность. Вернет True, если запись с таким username или email уже существует.
         Поднимет исключение ValueError, если не передан ни один из аргументов: username и email.
@@ -57,6 +58,11 @@ class UserRegisteredRepo(UserBaseRepo):
         Returns: True if already exists or False.
         """
         
+        if username and email:
+            is_username: bool = await cls._is_exists_user_by_username(username=username, db=db)
+            is_email: bool = await cls._is_exists_user_by_email(email=email, db=db)
+            return is_username or is_email
+        
         if username:
             result: bool = await cls._is_exists_user_by_username(username=username, db=db)
             return result
@@ -66,24 +72,25 @@ class UserRegisteredRepo(UserBaseRepo):
             return result
         
         if not username and not email:
-            raise ValueError("is_unique_user: username and email at least one must be passed")        
+            raise ValueError("is_unique_user: username and email at least one must be passed")
 
     @classmethod
-    async def delete_user(cls, username: str, db: AsyncSession) -> dict | None:
+    async def delete_user(cls, user_id: UUID, db: AsyncSession) -> UserDeleted | None:
         """
-        Удаление записи данных пользователя из БД. Вернет dict (e.g. {"username": "Иван"}), 
-        если пользователь был удалён.
+        Удаление записи данных пользователя из БД. Вернет UserDeleted, если пользователь был удалён.
         Args:
-            username: str - username
+            user_id: UUID - id of user
             db: AsyncSession
         """
         query = (
             delete(User)
             .where(
-                User.username.cast(String) == username,
+                User.id == user_id,
             )
             .returning(
+                User.id,
                 User.username,
+                User.email,
             )
         )
         try:
@@ -99,8 +106,8 @@ class UserRegisteredRepo(UserBaseRepo):
         user_map: RowMapping | None = result.mappings().first()
         if user_map is None:
             return
-        logger.success("Пользователь {} удалён!", username)
-        return {**user_map}
+        logger.success("Пользователь {} удалён!", user_id)
+        return UserDeleted(**user_map)
     
     @classmethod
     async def update_one_user_by_id(cls, user_id: UUID, data: dict, db: AsyncSession) -> UserBase | None:
