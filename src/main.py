@@ -4,6 +4,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from src.admin.admin_setup import setup_admin
 from src.auth.api.v1.api_router import router as auth_v1_router
 from src.core.config import settings
 from src.core.lifespan import lifespan
@@ -32,7 +33,7 @@ app.add_middleware(
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost",  settings.ALLOWED_HOST])
 
 # admin-panel
-# setup_admin(app)
+setup_admin(app)
 
 # endpoints
 app.include_router(auth_v1_router)
