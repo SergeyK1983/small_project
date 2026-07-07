@@ -7,6 +7,18 @@ class AuthBaseException(Exception):
     pass
 
 
+class NoneUserModelException(AuthBaseException):
+    pass
+
+
+class InvalidCredentialsException(AuthBaseException):
+    pass
+
+
+class UserIsNotActiveException(AuthBaseException):
+    pass
+
+
 class AuthHTTPException(AuthBaseException):
 
     @classmethod

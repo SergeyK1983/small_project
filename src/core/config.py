@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from cryptography.hazmat.primitives import serialization
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -19,6 +20,10 @@ class Settings(BaseSettings, case_sensitive=True):
 
     # auth
     PASSWORD_FILE: str = Field(alias="SMPR_PASSWORD_FILE")
+    ALGORITHM: str = Field(alias="SMPR_ALGORITHM")
+    PRIVATE_KEY: str = Field(alias="SMPR_PRIVATE_KEY")
+    PUBLIC_KEY: str = Field(alias="SMPR_PUBLIC_KEY")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(alias="SMPR_ACCESS_TOKEN_EXPIRE_MINUTES")
 
     # App
     APPLICATION: str = Field(alias="SMPR_APPLICATION")
@@ -44,6 +49,28 @@ class Settings(BaseSettings, case_sensitive=True):
     def async_postgresql_url(self) -> str:
         db_pass = self._get_db_pass()
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{db_pass}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
+    
+    @property
+    def public_key(self):
+        base_path = self._get_base_path()
+        with open(base_path / self.PUBLIC_KEY, "rb") as f:
+            key = f.read()
+        return key
+
+    @property
+    def private_key(self):
+        base_path = self._get_base_path()
+        with open(base_path / self.PRIVATE_KEY, "rb") as f:
+            key = f.read()
+
+        with open(base_path / self.PASSWORD_FILE, "rb") as f:
+            password = f.read()
+
+        private_key = serialization.load_pem_private_key(
+            key,
+            password=password
+        )
+        return private_key
 
 
 settings = Settings() # type: ignore
