@@ -7,11 +7,10 @@ from src.auth.schemas.input.user_auth_schema import UserAuthSchema
 from src.auth.schemas.output.token import UserTokenSchema
 from src.auth.utils.hasher import HasherError
 from src.core.dependencies import get_async_db
-from src.auth.services.auth_service import (
-    AuthUserService, InvalidCredentialsException, NoneUserModelException, UserIsNotActiveException
+from src.auth.services.auth_service import AuthUserService
+from src.auth.exceptions import (
+    AuthHTTPException, InvalidCredentialsException, NoneUserModelException, UserIsNotActiveException
 )
-
-from src.auth.exceptions import AuthHTTPException
 from src.core.logger import logger
 
 if TYPE_CHECKING:

@@ -1,33 +1,18 @@
 from typing import TYPE_CHECKING
 from uuid import UUID
 
+from src.auth.exceptions import InvalidCredentialsException, NoneUserModelException, UserIsNotActiveException
 from src.auth.repository.black_token_repository import TokenRepo
 from src.auth.repository.user_pwd_repository import UserPasswordRepo
 from src.auth.schemas.input.user_auth_schema import UserAuthSchema
 from src.auth.schemas.output.token import UserTokenSchema
-from src.auth.schemas.output.user_base import UserBase, UserWithPassword
+from src.auth.schemas.output.user_base import UserWithPassword
 from src.auth.utils.password import password
 from src.auth.utils.token import app_token
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
     from src.auth.utils.token import Payload
-
-
-class AuthUserServiceException(Exception):
-    pass
-
-
-class NoneUserModelException(AuthUserServiceException):
-    pass
-
-
-class InvalidCredentialsException(AuthUserServiceException):
-    pass
-
-
-class UserIsNotActiveException(AuthUserServiceException):
-    pass
 
 
 class AuthUserService:
