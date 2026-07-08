@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
 from src.auth.models import *
+from src.pay_system.models import *
 from src.core.config import settings
 from src.core.database import Base
 

@@ -1,10 +1,14 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import Index, String, Boolean, DateTime, func, UniqueConstraint, UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Boolean, DateTime, func, UniqueConstraint, UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.database import Base
+
+if TYPE_CHECKING:
+    from src.pay_system.models.cash_account import CashAccount
 
 
 class User(Base):
@@ -49,10 +53,14 @@ class User(Base):
         String(100), nullable=True, comment="Отчество"
     )
 
+    accounts_rub: Mapped[list["CashAccount"]] = relationship(
+         back_populates="user", cascade="all, delete-orphan"
+    )
+
     __table_args__ = (
         UniqueConstraint("username", name="user_username_key_uniq"),
         UniqueConstraint("email", name="user_email_key_uniq"),
-    )   
+    )
 
     def __repr__(self):
         return f"{self.id}-{self.username}"
