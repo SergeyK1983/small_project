@@ -7,7 +7,8 @@ from src.auth.schemas.input.change_pwd_schema import UserChangePasswordSchema
 from src.auth.utils.password import password
 from src.auth.utils.hasher import HasherError
 from src.core.dependencies import get_async_db
-from src.auth.exceptions import AuthHTTPException, InvalidCredentialsException, NoneUserModelException, RepositoryError
+from src.auth.exceptions import AuthHTTPException, InvalidCredentialsException, NoneUserModelException
+from src.core.exceptions import RepositoryError
 from src.core.logger import logger
 
 if TYPE_CHECKING:

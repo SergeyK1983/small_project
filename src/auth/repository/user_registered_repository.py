@@ -5,9 +5,8 @@ from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.models.user import User
-from src.auth.repository.user_base_repository import (
-    RepositoryDatabaseError, RepositoryIntegrityError, UserBaseRepo,
-)
+from src.auth.repository.user_base_repository import UserBaseRepo
+from src.core.exceptions import RepositoryDatabaseError, RepositoryIntegrityError
 from src.auth.schemas.output.user_base import UserBase
 from src.auth.schemas.output.user_delete import UserDeleted
 from src.core.logger import logger

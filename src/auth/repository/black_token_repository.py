@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from uuid import UUID
 
-from sqlalchemy import RowMapping, delete, insert, select, Select, exists, Result, func
+from sqlalchemy import RowMapping, delete, insert, select, Select, exists
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.auth.exceptions import RepositoryDatabaseError, RepositoryError, RepositoryIntegrityError
+from src.core.exceptions import RepositoryDatabaseError, RepositoryError, RepositoryIntegrityError
 from src.auth.models.black_list_token import BlackToken
 from src.core.logger import logger
 

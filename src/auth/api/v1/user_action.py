@@ -10,7 +10,8 @@ from src.auth.schemas.output.user_delete import UserDeleted
 from src.auth.services.user_service import UserActionsService, UserDoesNotExistException, UserExistsException
 from src.auth.utils.depends import check_admin_user
 from src.core.dependencies import get_async_db
-from src.auth.exceptions import AuthHTTPException, RepositoryError, UserHTTPException
+from src.auth.exceptions import AuthHTTPException, UserHTTPException
+from src.core.exceptions import RepositoryError
 from src.core.logger import logger
 
 if TYPE_CHECKING:

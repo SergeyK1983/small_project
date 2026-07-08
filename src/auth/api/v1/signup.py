@@ -8,7 +8,8 @@ from src.auth.schemas.input.user_auth_schema import UserSignupSchema
 from src.auth.schemas.output.user_base import UserBase
 from src.auth.services.register_service import RegisterUserAlreadyExists, RegistrationService
 from src.auth.utils.password import password
-from src.auth.exceptions import AuthHTTPException, RepositoryError
+from src.auth.exceptions import AuthHTTPException
+from src.core.exceptions import RepositoryError
 from src.core.logger import logger
 
 if TYPE_CHECKING:

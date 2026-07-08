@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.auth.exceptions import RepositoryDatabaseError, RepositoryError, RepositoryIntegrityError
+from src.core.exceptions import RepositoryDatabaseError, RepositoryError, RepositoryIntegrityError
 from src.auth.models.user import User
 from src.auth.repository.user_base_repository import UserBaseRepo
 from src.auth.schemas.output.user_base import UserBase
