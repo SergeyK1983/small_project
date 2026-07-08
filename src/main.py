@@ -6,6 +6,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from src.admin.admin_setup import setup_admin
 from src.auth.api.v1.api_router import router as auth_v1_router
+from src.pay_system.api.v1.api_router import router as pay_system_v1_router
 from src.core.config import settings
 from src.core.lifespan import lifespan
 from src.core.middleware import DBSessionMiddleware, LoggingMiddleware
@@ -37,3 +38,4 @@ setup_admin(app)
 
 # endpoints
 app.include_router(auth_v1_router)
+app.include_router(pay_system_v1_router)
