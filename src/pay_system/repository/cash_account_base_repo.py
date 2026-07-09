@@ -19,6 +19,7 @@ class CashAccountBaseRepo:
             CashAccount.updated,
             CashAccount.balance,
             CashAccount.currency,
+            CashAccount.user_id,
         )
         return query
 

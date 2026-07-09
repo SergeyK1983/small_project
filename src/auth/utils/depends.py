@@ -26,4 +26,4 @@ async def check_admin_user(request: Request):
     if hasattr(request.state, "user"):
         if request.state.user.is_superuser:
             return True
-    AuthHTTPException.raise_http_401()
+    AuthHTTPException.raise_http_403()

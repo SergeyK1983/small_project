@@ -1,4 +1,4 @@
-from src.pay_system.api.v1 import api_router
+from src.pay_system.api.v1 import api_router, cash_account_create
 
 
-__all__ = ["api_router",]
+__all__ = ["api_router", "cash_account_create"]
