@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import BigInteger, ForeignKey, Index, String, DateTime, func, UUID, text
+from sqlalchemy import BigInteger, ForeignKey, Index, String, DateTime, func, UUID, text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.database import Base
@@ -25,13 +25,19 @@ class CashPayment(Base):
     description: Mapped[str] = mapped_column(
         String, default=text(""), comment="Описание операции"
     )
-    amount: Mapped[int] = mapped_column(BigInteger, comment="Сумма пополнения/списания в коп.")
+    amount: Mapped[int] = mapped_column(
+        BigInteger, comment="Сумма пополнения/списания в коп."
+    )
+    transaction_id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), comment="код транзакции"
+    )
 
     account_rub_id: Mapped[UUID] = mapped_column(ForeignKey("cash_accounts.id",  ondelete='CASCADE'))
     cash_account: Mapped["CashAccount"] = relationship(back_populates="payments", single_parent=True)
 
     __table_args__ = (
         Index("cash_payments_account_rub_id_idx", account_rub_id),
+        UniqueConstraint(transaction_id, name="cash_payments_transaction_id_uniq")
     )
 
     def __repr__(self):
