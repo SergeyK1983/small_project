@@ -5,3 +5,7 @@ class PaySystemBaseException(Exception):
 class PaySystemNotUserException(PaySystemBaseException):
     """ Не найден пользователь, для которого выполняется операция """
     pass
+
+
+class PaySystemNotAccountException(PaySystemBaseException):
+    pass

@@ -11,7 +11,15 @@ from src.auth.utils.token import TypeCookieToken, TypeHeaderToken
 from src.core.logger import logger
 
 
-EXCLUDED_PATHS = {"/auth/v1/signup", "/auth/v1/login", "/docs", "/redoc", "/openapi.json"}
+EXCLUDED_PATHS = {
+    "/auth/v1/signup",
+    "/auth/v1/login",
+    "/docs",
+    "/redoc",
+    "/openapi.json",
+    "/pay-system/v1/transaction-amount",
+    "/pay-system/v1/transaction-webhook"
+}
 
 
 class AuthMiddleware(BaseHTTPMiddleware):

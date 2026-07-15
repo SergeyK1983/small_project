@@ -32,6 +32,7 @@ class Settings(BaseSettings, case_sensitive=True):
     ALLOW_ORIGINS: list[str] = Field(alias="SMPR_ALLOW_ORIGINS")
     ALLOW_HEADERS: list[str] = Field(alias="SMPR_ALLOW_HEADERS")
     ALLOW_METHODS: list[str] = Field(alias="SMPR_ALLOW_METHODS")
+    PAYMENT_PSW_FILE: str = Field(alias="SMPR_PAYMENT_PSW_FILE")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
@@ -71,6 +72,15 @@ class Settings(BaseSettings, case_sensitive=True):
             password=password
         )
         return private_key
+    
+    @property
+    def payment_key(self):
+        base_path = self._get_base_path()
+
+        with open(base_path / self.PAYMENT_PSW_FILE, "r") as f:
+            password = f.read()
+        
+        return password
 
 
 settings = Settings() # type: ignore
