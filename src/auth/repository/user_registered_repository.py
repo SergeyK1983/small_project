@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import Select, delete, String, RowMapping, update
+from sqlalchemy import Result, Select, delete, String, RowMapping, exists, select, update, and_
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -72,6 +72,26 @@ class UserRegisteredRepo(UserBaseRepo):
         
         if not username and not email:
             raise ValueError("is_unique_user: username and email at least one must be passed")
+    
+    @classmethod
+    async def is_exists_user_by_id(cls, user_id: UUID, db: AsyncSession) -> bool:
+        """ Вернет True, если пользователь существует, иначе False """
+
+        query: Select = select(exists().where(User.id == user_id))     
+        
+        result: Result = await cls._select_execute_query(query, db)
+        is_exists: bool = result.scalar() # type: ignore
+        return is_exists
+    
+    @classmethod
+    async def is_exists_and_active_user_by_id(cls, user_id: UUID, db: AsyncSession) -> bool:
+        """ Вернет True, если пользователь существует и активен, иначе False """
+
+        query: Select = select(exists().where(and_(User.id == user_id, User.is_active == True)))     
+        
+        result: Result = await cls._select_execute_query(query, db)
+        is_exists: bool = result.scalar() # type: ignore
+        return is_exists
 
     @classmethod
     async def delete_user(cls, user_id: UUID, db: AsyncSession) -> UserDeleted | None:

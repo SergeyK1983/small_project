@@ -84,5 +84,6 @@ class CashPaymentSchema(BaseModel):
         Decimal, 
         Field(max_digits=15, decimal_places=2, description="сумма пополнения/списания", examples=[100.25, -3200])
     ]
+    description: Annotated[str | None, Field(description="Описание платежа")] = None
     signature: Annotated[str, Field(description="Подпись с секретным ключом")]
     

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import Insert, RowMapping, desc
+from sqlalchemy import Insert, Result, Update, RowMapping, desc, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +12,7 @@ from src.pay_system.schemas.output.cash_account_base import CashAccountBase
 from src.core.logger import logger
 
 
-class CashAccountCreateRepo(CashAccountBaseRepo):
+class CashAccountCreateUpdateRepo(CashAccountBaseRepo):
     """ Первичное создание платежного счета для пользователя с нулевым балансом """
 
     @classmethod
@@ -47,6 +47,19 @@ class CashAccountCreateRepo(CashAccountBaseRepo):
         return CashAccountBase(**created)
     
     @classmethod
+    async def __update(cls, query: Update, db: AsyncSession) -> Result:
+        try:
+            result = await db.execute(query)            
+        except IntegrityError as exp:
+            logger.exception("Integrity error in query", extra={"query": str(query)})
+            raise RepositoryIntegrityError("Integrity constraint violated") from exp
+        except DatabaseError as exp:
+            logger.exception("Database error in query", extra={"query": str(query)})
+            raise RepositoryDatabaseError("Database operation failed") from exp
+        
+        return result
+    
+    @classmethod
     async def create_cash_account(cls, user_id: UUID, db: AsyncSession) -> CashAccountBase:
         """
         Запрос на создание платежного счета для пользователя
@@ -63,6 +76,36 @@ class CashAccountCreateRepo(CashAccountBaseRepo):
         return result
     
     @classmethod
-    async def update_cash_account(cls, user_id: UUID, db: AsyncSession):
-        pass
+    async def update_cash_account(cls, account_id: UUID, amount: int, db: AsyncSession) -> CashAccountBase:
+        """ 
+        Запрос для обновления баланса платежного счета
+        Args:
+            account_id: номер счета
+            amount: сумма пополнения/списания
+        Returns:
+            updated obj CashAccountBase
+        """
+        query = (
+            update(
+                CashAccount
+            ).
+            where(
+                CashAccount.id == account_id
+            ).
+            values(
+                balance=CashAccount.balance + amount
+            ).
+            returning(
+                CashAccount
+            )
+        )        
+        result = await cls.__update(query, db)
+        updated: RowMapping | None = result.mappings().fetchone()
+        
+        if updated is None:
+            await db.rollback()
+            raise RepositoryError("CashAccount update error, updated must not be None")
+        
+        await db.commit()
 
+        return CashAccountBase.model_validate(updated["CashAccount"], from_attributes=True)

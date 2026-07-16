@@ -10,7 +10,7 @@ from src.pay_system.api.v1.api_router import router
 from src.pay_system.exceptions import PaySystemNotUserException
 from src.pay_system.schemas.input.cash_account_user import CashAccountUser
 from src.pay_system.schemas.output.cash_account_base import CashAccountBase
-from src.pay_system.services.cash_account_service import CashAccountService
+from src.pay_system.services.cash_account_service import CashAccountRUBService
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession    
@@ -29,7 +29,7 @@ async def create_user_cash_account(
 ) -> CashAccountBase:
     
     try:
-        response: CashAccountBase = await CashAccountService(user_id=user.user_id, db=db).create_user_cash_account()
+        response: CashAccountBase = await CashAccountRUBService(user_id=user.user_id, db=db).create_user_cash_account()
     except PaySystemNotUserException:
         ProjectHTTPException.raise_http_404()
     except RepositoryError:

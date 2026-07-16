@@ -1,7 +1,6 @@
 import asyncio
 from datetime import datetime
 from typing import TYPE_CHECKING, Annotated
-from uuid import UUID
 
 from aiohttp import ClientSession, ClientTimeout, ClientResponseError, ClientError
 from fastapi import Body, Depends, status, Query, Response
@@ -14,11 +13,15 @@ from src.core.logger import logger
 from src.pay_system.api.v1.api_router import router
 from src.pay_system.exceptions import PaySystemNotAccountException, PaySystemNotUserException
 from src.pay_system.schemas.input.cash_payment_webhook import Amount, CashPaymentSchema, CashPaymentWebhook
-from src.pay_system.schemas.output.cash_account_base import CashAccountBase
+from src.pay_system.schemas.output.account_payment import CashAccountPayment
+from src.pay_system.services.cash_account_service import CashAccountRUBService
+from src.pay_system.services.cash_payment_service import CashPaymentRUBService
 from src.pay_system.services.payment_webhook import ThirdPaymentSystem
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
+    from src.pay_system.schemas.output.cash_account_base import CashAccountBase
+    from src.pay_system.schemas.output.cash_payment_base import CashPaymentBase
 
 
 PATH_SEND = "http://localhost:8010/pay-system/v1/"
@@ -76,28 +79,39 @@ async def transaction_amount(
         logger.error("transaction_amount: {}", str(exp))
         ProjectHTTPException.raise_http_500()
     
-    return JSONResponse(content={"msg": f"Транзакция на сумму {amount}"}, status_code=status.HTTP_200_OK)
+    content = {
+        "msg": f"Транзакция на сумму {amount}",
+        "transaction_id": str(cash_payment.transaction_id),
+        "server": message
+    }    
+    return JSONResponse(content=content, status_code=status.HTTP_200_OK)
 
 
 @router.post(
     "/transaction-webhook",
-    status_code=status.HTTP_200_OK,
-    name="create_cash_account",
+    response_model=CashAccountPayment,
+    status_code=status.HTTP_201_CREATED,
+    name="transaction",
 )
 async def transaction_webhook(
     payment: Annotated[CashPaymentSchema, Body()],
     db: Annotated["AsyncSession", Depends(get_async_db)]
 ):
-    # обработать транзакцию
-    amount = payment.amount
-    print(amount)
     try:
-        response = ...
+        cps = CashPaymentRUBService(payment, db)        
+        cash_payment: "CashPaymentBase" = await cps.process()
+
+        cas = CashAccountRUBService(payment.user_id, db)
+        cash_account: "CashAccountBase" = await cas.update_user_cash_account(payment.account_id, payment.amount)
+        resp = CashAccountPayment(
+            account=cash_account,
+            payment=cash_payment
+        )
     except PaySystemNotUserException:
         ProjectHTTPException.raise_http_404()
     except RepositoryError:
         ProjectHTTPException.raise_http_500()
     except Exception as exp:
-        logger.error("create_cash_account: {}", str(exp))
+        logger.error("transaction processing: {}", str(exp))
         ProjectHTTPException.raise_http_500()
-    return JSONResponse(content={"msg": f"Хук сработал"}, status_code=status.HTTP_200_OK)
+    return resp

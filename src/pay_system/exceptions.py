@@ -8,4 +8,10 @@ class PaySystemNotUserException(PaySystemBaseException):
 
 
 class PaySystemNotAccountException(PaySystemBaseException):
+    """ Не найден счет, для которого выполняется операция """
+    pass
+
+
+class PaySystemPaymentException(PaySystemBaseException):
+    """ Ошибка при выполнении/обработке платежа """
     pass
