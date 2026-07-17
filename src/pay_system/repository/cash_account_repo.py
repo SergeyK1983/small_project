@@ -32,24 +32,21 @@ class CashAccountRepo(CashAccountBaseRepo):
         return is_exists
     
     @classmethod
-    async def select_user_accounts(cls, user_id: UUID, db: AsyncSession) -> UserCashAccounts:
+    async def select_user_accounts(cls, user_id: UUID, db: AsyncSession) -> list[CashAccountBase]:
         query = cls._select_cash_account_fields().where(CashAccount.user_id == user_id)
 
         result = await cls._select_execute_query(query, db)
-        rows: list[RowMapping] | list = result.mappings().fetchall() # type: ignore
+        rows: list[RowMapping] = result.mappings().fetchall() # type: ignore
         
-        uca = UserCashAccounts(
-            user_id=user_id,
-            accounts=[
-                CashAccountBase(
-                    id=row["id"],
-                    created=row["created"],
-                    updated=row["updated"],
-                    currency=row["currency"],
-                    balance=row["balance"],
-                    user_id=row["user_id"],
-                ) for row in rows if row
-            ]
-        )
-        return uca
+        cab_list = [
+            CashAccountBase(
+                id=row["id"],
+                created=row["created"],
+                updated=row["updated"],
+                currency=row["currency"],
+                balance=row["balance"],
+                user_id=row["user_id"],
+            ) for row in rows if row
+        ]        
+        return cab_list
 
