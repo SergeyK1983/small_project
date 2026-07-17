@@ -23,7 +23,7 @@ if TYPE_CHECKING:
         Счета пользователя
     """
 )
-async def get_user_cash_account(
+async def get_user_cash_accounts(
     request: Request,
     db: Annotated["AsyncSession", Depends(get_async_db)]
 ):

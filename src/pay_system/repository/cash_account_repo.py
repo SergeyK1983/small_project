@@ -5,7 +5,6 @@ from sqlalchemy import RowMapping, Select, exists, select
 
 from src.pay_system.models.cash_account import CashAccount
 from src.pay_system.schemas.output.cash_account_base import CashAccountBase
-from src.pay_system.schemas.output.cash_account_user import UserCashAccounts
 
 from .cash_account_base_repo import CashAccountBaseRepo
 

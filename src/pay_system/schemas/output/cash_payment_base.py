@@ -22,10 +22,4 @@ class CashPaymentBase(BaseModel):
     def set_decimal(self, value: int) -> Decimal:
         d_value = Decimal(str(value / CoefficientMonetaryUnits.RUB)).quantize(Decimal("0.01"))
         return d_value
-        
 
-class AccountCashPayments(BaseModel):
-    """ Перечень платежей для счета """
-    
-    account_id: Annotated[UUID, Field(description="Идентификатор счета")]
-    payments: Annotated[list[CashPaymentBase], Field(description="Платежи")]
