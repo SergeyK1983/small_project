@@ -13,7 +13,7 @@ from src.pay_system.schemas.output.cash_account_base import CashAccountBase
 from src.pay_system.services.cash_account_service import CashAccountRUBService
 
 if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession    
+    from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @router.post(

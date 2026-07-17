@@ -11,7 +11,7 @@ class CashAccountBaseRepo:
 
     @staticmethod
     def _select_cash_account_fields() -> Select:
-        """Основные данные пользователя"""
+        """Основные данные счета пользователя"""
 
         query = select(
             CashAccount.id,
