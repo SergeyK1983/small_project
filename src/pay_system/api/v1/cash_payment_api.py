@@ -11,7 +11,10 @@ from src.core.dependencies import get_async_db
 from src.core.exceptions import ProjectHTTPException, RepositoryError
 from src.core.logger import logger
 from src.pay_system.api.v1.api_router import router
-from src.pay_system.exceptions import PaySystemNotAccountException, PaySystemNotUserException
+from src.pay_system.exceptions import (
+    PaySystemBalanceLessZeroException, PaySystemNotAccountException, PaySystemNotUserException, 
+    PaySystemPaymentException
+)
 from src.pay_system.schemas.input.cash_payment_webhook import Amount, CashPaymentSchema, CashPaymentWebhook
 from src.pay_system.schemas.output.account_payment import CashAccountPayment
 from src.pay_system.services.cash_account_service import CashAccountRUBService
@@ -107,6 +110,11 @@ async def transaction_webhook(
             account=cash_account,
             payment=cash_payment
         )
+    except PaySystemBalanceLessZeroException as exp:
+        content = {"message": str(exp)}
+        return JSONResponse(content=content, status_code=status.HTTP_200_OK)
+    except PaySystemPaymentException as exp:
+        ProjectHTTPException.raise_http_400(detail=str(exp))
     except PaySystemNotUserException:
         ProjectHTTPException.raise_http_404()
     except RepositoryError:

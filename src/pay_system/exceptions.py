@@ -15,3 +15,9 @@ class PaySystemNotAccountException(PaySystemBaseException):
 class PaySystemPaymentException(PaySystemBaseException):
     """ Ошибка при выполнении/обработке платежа """
     pass
+
+
+class PaySystemBalanceLessZeroException(PaySystemBaseException):
+    """ Баланс на счете будет меньше нуля после операции """
+    pass
+

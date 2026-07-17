@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from src.auth.repository.user_registered_repository import UserRegisteredRepo
 from src.core.config import settings
 from src.pay_system.constants import CoefficientMonetaryUnits
-from src.pay_system.exceptions import PaySystemPaymentException
+from src.pay_system.exceptions import PaySystemBalanceLessZeroException, PaySystemPaymentException
 from src.pay_system.repository.cash_account_repo import CashAccountRepo
 from src.pay_system.repository.cash_payment_repo import CashPaymentRepo
 
@@ -58,27 +58,40 @@ class CashPaymentBaseService(ABC):
     async def process(self) -> "CashPaymentBase":
         """ Выполнит необходимые проверки и сохранит платеж в БД. """
 
-        is_verify = self._verify_signature()
+        is_verify: bool = self._verify_signature()
         if not is_verify:
-            PaySystemPaymentException("Транзакция не прошла проверку подписи")
+            raise PaySystemPaymentException("Транзакция не прошла проверку подписи")
         
-        is_user = await self._check_user_exists()
+        is_user: bool = await self._check_user_exists()
         if not is_user:
-            PaySystemPaymentException("Не найден пользователь для проведения операции")
+            raise PaySystemPaymentException("Не найден пользователь для проведения операции")
         
-        is_account = await self._check_cash_account_exists()
+        is_account: bool = await self._check_cash_account_exists()
         if not is_account:
-            PaySystemPaymentException("Не найден счет для проведения операции")
+            raise PaySystemPaymentException("Не найден счет для проведения операции")
         
-        is_uniq = await self._check_transaction_uniq()
+        is_uniq: bool = await self._check_transaction_uniq()
         if not is_uniq:
-            PaySystemPaymentException("Операция не может быть проведена повторно")
+            raise PaySystemPaymentException("Операция не может быть проведена повторно")
+
+        balance: int | None = await self.get_account_balance()
+        if not balance:
+            raise PaySystemPaymentException("Не найден счет для проведения операции")
+        
+        amount: int = self.convert_monetary_units()
+
+        if balance and balance + amount < 0:
+            raise PaySystemBalanceLessZeroException("Для выполнения операции на счете не достаточно средств")
         
         payment: "CashPaymentBase" = await self.save_payment()
         return payment
     
     @abstractmethod
     def convert_monetary_units(self) -> int:
+        pass
+
+    @abstractmethod
+    async def get_account_balance(self) -> int | None:
         pass
     
     @abstractmethod
@@ -94,7 +107,17 @@ class CashPaymentRUBService(CashPaymentBaseService):
         self.db = db
 
     def convert_monetary_units(self) -> int:
+        """ Конвертирует до денежной единицы (из рублей в копейки) для БД """
+
         return int(self.payment.amount * CoefficientMonetaryUnits.RUB)
+    
+    async def get_account_balance(self) -> int | None:
+        """ Вернет баланс счета в копейках или None, если счёт не найден """
+
+        account = await CashAccountRepo.select_account_by_id(self.payment.account_id, self.db)
+        if not account:
+            return None
+        return account.balance
     
     async def save_payment(self) -> "CashPaymentBase":
         """ Сохранение платежа """
