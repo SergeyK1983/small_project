@@ -75,7 +75,7 @@ class CashPaymentBaseService(ABC):
             raise PaySystemPaymentException("Операция не может быть проведена повторно")
 
         balance: int | None = await self.get_account_balance()
-        if not balance:
+        if balance is None:
             raise PaySystemPaymentException("Не найден счет для проведения операции")
         
         amount: int = self.convert_monetary_units()

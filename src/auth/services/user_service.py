@@ -3,7 +3,7 @@ from uuid import UUID
 
 from src.auth.repository.user_registered_repository import UserRegisteredRepo
 from src.auth.schemas.output.user_base import UserBase
-from src.auth.schemas.output.user_delete import UserDeleted
+from src.auth.schemas.output.user_delete import UserDeleted, UserLightDeleted
 from src.auth.schemas.input.update_schema import UserUpdateSchema, UserAdminUpdateSchema
 
 if TYPE_CHECKING:
@@ -37,26 +37,28 @@ class UserActionsService:
 
         return user_data
     
-    async def delete_user(self, user: UUID, db: "AsyncSession") -> UserDeleted | None:
+    async def delete_user(self, user: UUID, db: "AsyncSession") -> UserLightDeleted | None:
         """
-        Удаление данных пользователя
+        Пользователь переводится в "не активные" (мягкое удаление). Флаг **is_active** устанавливается в **False**.
         Args:
             user: id of User
 
-        Returns: UserDeleted data or None
+        Returns: UserBase data or None
         """
-        user_data: UserDeleted | None = await UserRegisteredRepo.delete_user(user, db)
+        data = {"is_active": False}
+        user_data: UserBase | None = await UserRegisteredRepo.update_one_user_by_id(user, data, db)
         if user_data is None:
             return None
-
-        return user_data
+        
+        uld = UserLightDeleted(
+            id=user_data.id,
+            username=user_data.username,
+            email=user_data.email,
+            is_active=user_data.is_active
+        )
+        return uld
     
-    async def update_user(
-            self, 
-            user_id: UUID, 
-            update_data: UserUpdateSchema | UserAdminUpdateSchema,
-            db: "AsyncSession"
-        ) -> UserBase | None:
+    async def update_user(self, user_id: UUID, update_data: UserUpdateSchema, db: "AsyncSession") -> UserBase | None:
         """
         Изменение данных пользователя
         Args:
@@ -65,20 +67,14 @@ class UserActionsService:
 
         Returns: UserBase data or None
         """
-        if isinstance(update_data, UserUpdateSchema):
-            if update_data.username or update_data.email:
-                exists: bool = await UserRegisteredRepo.is_unique_user(
-                    db=db,
-                    username=update_data.username,
-                    email=update_data.email
-                )
-                if exists:
-                    raise UserExistsException()
-        
-        if isinstance(update_data, UserAdminUpdateSchema):
-            user: UserBase | None = await UserRegisteredRepo.read_one_user_by_id(user_id, db)
-            if not user:
-                raise UserDoesNotExistException()
+        if update_data.username or update_data.email:
+            exists: bool = await UserRegisteredRepo.is_unique_user(
+                db=db,
+                username=update_data.username,
+                email=update_data.email
+            )
+            if exists:
+                raise UserExistsException()
 
         data: dict = update_data.model_dump(exclude_none=True)
         user_data: UserBase | None = await UserRegisteredRepo.update_one_user_by_id(user_id, data, db)

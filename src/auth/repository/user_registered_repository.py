@@ -148,15 +148,7 @@ class UserRegisteredRepo(UserBaseRepo):
                 User.id == user_id
             ).
             returning(
-                User.id,
-                User.username,
-                User.email,
-                User.is_active,
-                User.is_staff,
-                User.is_superuser,
-                User.first_name,
-                User.second_name,
-                User.last_name,
+                User
             )
         )
 
@@ -173,4 +165,4 @@ class UserRegisteredRepo(UserBaseRepo):
             return None
         logger.success("Данные пользователя id - {} изменены", user_id)
         
-        return UserBase(**user_map)
+        return UserBase.model_validate(user_map["User"], from_attributes=True)
