@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     name="create_cash_account",
 )
 async def create_user_cash_account(
-    user: Annotated[CashAccountUser, Body],
+    user: Annotated[CashAccountUser, Body()],
     db: Annotated["AsyncSession", Depends(get_async_db)]
 ) -> CashAccountBase:
     

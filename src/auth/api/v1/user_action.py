@@ -85,7 +85,7 @@ async def delete_user(
 )
 async def update_user(
     request: Request,
-    update_data: Annotated[UserUpdateSchema, Body],
+    update_data: Annotated[UserUpdateSchema, Body()],
     db: Annotated["AsyncSession", Depends(get_async_db)]
 ) -> UserBase:
     
@@ -121,7 +121,7 @@ async def update_user(
 )
 async def update_user_admin(
     user_id: UUID,
-    update_data: Annotated[UserAdminUpdateSchema, Body],
+    update_data: Annotated[UserAdminUpdateSchema, Body()],
     db: Annotated["AsyncSession", Depends(get_async_db)]
 ) -> UserBase:
     

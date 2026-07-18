@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 )
 async def change_user_password(
     request: Request,
-    body_data: Annotated[UserChangePasswordSchema, Body],
+    body_data: Annotated[UserChangePasswordSchema, Body()],
     db: Annotated["AsyncSession", Depends(get_async_db)],
 ) -> Response:
 
