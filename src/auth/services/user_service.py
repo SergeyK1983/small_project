@@ -3,8 +3,8 @@ from uuid import UUID
 
 from src.auth.repository.user_registered_repository import UserRegisteredRepo
 from src.auth.schemas.output.user_base import UserBase
-from src.auth.schemas.output.user_delete import UserDeleted, UserLightDeleted
-from src.auth.schemas.input.update_schema import UserUpdateSchema, UserAdminUpdateSchema
+from src.auth.schemas.output.user_delete import UserLightDeleted
+from src.auth.schemas.input.update_schema import UserUpdateSchema
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession

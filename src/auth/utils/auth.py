@@ -30,6 +30,8 @@ class Authentication:
         user: UserBase | None = await UserRegisteredRepo.read_one_user_by_id(self.payload.uid, self.db)
         if not user:
             UserHTTPException.raise_http_404()
+        if not user.is_active:
+            AuthHTTPException.raise_http_401()
         self.request.state.user = user
         return None
     
