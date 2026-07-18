@@ -22,6 +22,10 @@ if TYPE_CHECKING:
     response_model=CashAccountBase,
     status_code=status.HTTP_201_CREATED,
     name="create_cash_account",
+    summary="Admin only. Создать платежный счет.",
+    description="""
+        Для администратора. Создание платежного счета пользователя.
+    """
 )
 async def create_user_cash_account(
     user: Annotated[CashAccountUser, Body()],

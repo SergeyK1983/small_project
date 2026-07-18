@@ -33,11 +33,29 @@ PATH_SEND = "http://localhost:8010/pay-system/v1/"
 @router.get(
     "/transaction-amount",
     name="amount",
+    summary="Пополнение/Списание",
+    description="""
+        Без аутентификации. Имитация запроса пополнения/списания со счета через платежную систему (вебхук).
+        Сумма вводится в рублях, копейки через точку
+
+        Пример вводимых данных:
+        - amount: int = 100.50 или -255.23
+        - account_id: UUID = 587ad69c-dd3b-425d-bf6a-48c663d2189b (id счета)
+
+        На внутренний API отправляет POST запрос вида:
+        - transaction_id - уникальный идентификатор транзакции в “сторонней системе”
+        - account_id - уникальный идентификатор счета пользователя
+        - user_id - уникальный идентификатор счета пользователя
+        - amount - сумма пополнения счета пользователя
+        - signature - SHA256 хеш подпись объекта
+
+        Правило для signature = {account_id}{amount}{transaction_id}{user_id}{secret_key}
+    """
 )
 async def transaction_amount(    
     db: Annotated["AsyncSession", Depends(get_async_db)],
-    amount: Annotated[str, Query()],
-    account_id: Annotated[str, Query()],
+    amount: Annotated[str, Query(examples=["100.50", "-255.23"])],
+    account_id: Annotated[str, Query(examples=["587ad69c-dd3b-425d-bf6a-48c663d2189b"])],
 ) -> Response:
     
     try:
@@ -95,6 +113,23 @@ async def transaction_amount(
     response_model=CashAccountPayment,
     status_code=status.HTTP_201_CREATED,
     name="transaction",
+    # include_in_schema=False,
+    summary="Обработка транзакции",
+    description="""
+        То самое API, на которое приходит запрос от сторонней платежной системы.
+
+        Пример:
+
+        transaction_id: UUID
+        account_id: UUID
+        user_id: UUID
+        amount: 100.50 или -255.23
+        signature: SHA256 хеш
+
+        Правило для signature = {account_id}{amount}{transaction_id}{user_id}{secret_key}
+
+        secret_key = d%d*+ng=269ygk4heogycqb@vzrxwi7+3-pm8ja5q2f3xu!+kj
+    """
 )
 async def transaction_webhook(
     payment: Annotated[CashPaymentSchema, Body()],

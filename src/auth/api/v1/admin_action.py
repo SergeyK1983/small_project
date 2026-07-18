@@ -91,6 +91,7 @@ async def delete_user(
     response_model=UserBase,
     status_code=status.HTTP_200_OK,
     name="admin_update_user",
+    summary="Admin only. Update user.",
     description="""
         Изменение данных пользователя администратором. Администратор может менять следующие поля:\n
         

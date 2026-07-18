@@ -19,8 +19,9 @@ if TYPE_CHECKING:
     response_model=UserCashAccounts,
     status_code=status.HTTP_200_OK,
     name="user_cash_accounts",
+    summary="Счета",
     description="""
-        Счета пользователя
+        Счета пользователя. Пользователь может просматривать только свои счета. Должен войти в систему.
     """
 )
 async def get_user_cash_accounts(

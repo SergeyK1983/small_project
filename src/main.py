@@ -15,6 +15,12 @@ from src.middleware.auth_middleware import AuthMiddleware
 
 app = FastAPI(
     lifespan=lifespan,
+    title="Small Project API",
+    version="1.0.0",
+    description="""
+        Небольшой проект для отработки аутентификации и авторизации с применением JWT токенов.
+        Имитация работы со сторонней платежной системой.
+    """,
 )
 
 # middleware

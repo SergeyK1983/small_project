@@ -21,8 +21,10 @@ if TYPE_CHECKING:
     response_model=AccountCashPayments,
     status_code=status.HTTP_200_OK,
     name="user_cash_payments",
+    summary="Операции по счету",
     description="""
-        Перечень операций по указанному счету
+        Перечень операций по указанному счету. Пользователь может просматривать только свои счета. Должен войти
+        в систему.
     """
 )
 async def get_user_cash_account_payments(

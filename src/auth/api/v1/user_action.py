@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     response_model=UserBase,
     status_code=status.HTTP_200_OK,
     name="get_user",
+    summary="Данные о себе",
 )
 async def get_user(
     request: Request,
