@@ -28,7 +28,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         if request.url.path in EXCLUDED_PATHS:
             return await call_next(request)
-        if "/admin" in request.url.path:
+        if "/admin-smp" in request.url.path:
             return await call_next(request)
 
         token = None

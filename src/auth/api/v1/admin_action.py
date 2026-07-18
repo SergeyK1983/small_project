@@ -57,7 +57,7 @@ async def get_users(
 
 
 @router.delete(
-    "/admin-delete-user/{user_id}",
+    "/adm-delete-user/{user_id}",
     response_model=UserDeleted,
     status_code=status.HTTP_200_OK,
     name="admin_delete_user",
@@ -86,7 +86,7 @@ async def delete_user(
 
 
 @router.patch(
-    "/admin-update-user/{user_id}",
+    "/adm-update-user/{user_id}",
     dependencies=[Depends(check_admin_user)],
     response_model=UserBase,
     status_code=status.HTTP_200_OK,

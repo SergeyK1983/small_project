@@ -11,6 +11,7 @@ def setup_admin(app):
         app,
         db_helper.engine,
         authentication_backend=AdminAuth(secret_key=settings.PASSWORD_FILE),
+        base_url="/admin-smp"
     )
 
     admin.add_view(UserAdmin)
