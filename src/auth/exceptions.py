@@ -66,18 +66,3 @@ class UserHTTPException(AuthBaseException):
             detail = "User not found"
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
 
-
-class RepositoryError(Exception):
-    """Базовая ошибка репозитория."""
-    pass
-
-
-class RepositoryIntegrityError(RepositoryError):
-    """Нарушение целостности данных."""
-    pass
-
-
-class RepositoryDatabaseError(RepositoryError):
-    """Общая ошибка БД."""
-    pass
-

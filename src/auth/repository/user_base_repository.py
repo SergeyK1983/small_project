@@ -2,7 +2,7 @@ from sqlalchemy import select, Select, exists, String, Result
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.auth.exceptions import RepositoryDatabaseError, RepositoryIntegrityError
+from src.core.exceptions import RepositoryDatabaseError, RepositoryIntegrityError
 from src.auth.models.user import User
 from src.core.logger import logger
 

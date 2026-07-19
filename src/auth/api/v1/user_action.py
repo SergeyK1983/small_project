@@ -1,16 +1,15 @@
 from typing import TYPE_CHECKING, Annotated
-from uuid import UUID
 
 from fastapi import Body, Depends, Request, status
 
 from src.auth.api.v1.api_router import router
-from src.auth.schemas.input.update_schema import UserAdminUpdateSchema, UserUpdateSchema
+from src.auth.schemas.input.update_schema import UserUpdateSchema
 from src.auth.schemas.output.user_base import UserBase
-from src.auth.schemas.output.user_delete import UserDeleted
-from src.auth.services.user_service import UserActionsService, UserDoesNotExistException, UserExistsException
-from src.auth.utils.depends import check_admin_user
+from src.auth.schemas.output.user_delete import UserLightDeleted
+from src.auth.services.user_service import UserActionsService, UserExistsException
 from src.core.dependencies import get_async_db
-from src.auth.exceptions import AuthHTTPException, RepositoryError, UserHTTPException
+from src.auth.exceptions import AuthHTTPException, UserHTTPException
+from src.core.exceptions import RepositoryError
 from src.core.logger import logger
 
 if TYPE_CHECKING:
@@ -22,6 +21,7 @@ if TYPE_CHECKING:
     response_model=UserBase,
     status_code=status.HTTP_200_OK,
     name="get_user",
+    summary="Данные о себе",
 )
 async def get_user(
     request: Request,
@@ -44,17 +44,20 @@ async def get_user(
 
 @router.delete(
     "/delete-user",
-    response_model=UserDeleted,
+    response_model=UserLightDeleted,
     status_code=status.HTTP_200_OK,
     name="delete_user",
+    description="""
+        Мягкое удаление пользователя (is_active=False)
+    """
 )
 async def delete_user(
     request: Request,
     db: Annotated["AsyncSession", Depends(get_async_db)]
-) -> UserDeleted:
+) -> UserLightDeleted:
     
     try:
-        user_data: UserDeleted | None = await UserActionsService().delete_user(request.state.user.id, db)
+        user_data: UserLightDeleted | None = await UserActionsService().delete_user(request.state.user.id, db)
     except RepositoryError:
         AuthHTTPException.raise_http_500()
     except Exception as exp:
@@ -84,7 +87,7 @@ async def delete_user(
 )
 async def update_user(
     request: Request,
-    update_data: Annotated[UserUpdateSchema, Body],
+    update_data: Annotated[UserUpdateSchema, Body()],
     db: Annotated["AsyncSession", Depends(get_async_db)]
 ) -> UserBase:
     
@@ -103,38 +106,3 @@ async def update_user(
     
     return user_data
 
-
-@router.patch(
-    "/admin-update-user/{user_id}",
-    dependencies=[Depends(check_admin_user)],
-    response_model=UserBase,
-    status_code=status.HTTP_200_OK,
-    name="admin_update_user",
-    description="""
-        Изменение данных пользователя администратором. Администратор может менять следующие поля:\n
-        
-        is_active: bool | None = None
-        is_staff: bool | None = None
-        is_superuser: bool | None = None
-    """
-)
-async def update_user_admin(
-    user_id: UUID,
-    update_data: Annotated[UserAdminUpdateSchema, Body],
-    db: Annotated["AsyncSession", Depends(get_async_db)]
-) -> UserBase:
-    
-    try:
-        user_data: UserBase | None = await UserActionsService().update_user(user_id, update_data, db)    
-    except UserDoesNotExistException:
-        UserHTTPException.raise_http_404()
-    except RepositoryError:
-        AuthHTTPException.raise_http_500()
-    except Exception as exp:
-        logger.error("deleted: {}", str(exp))
-        AuthHTTPException.raise_http_500()
-    
-    if not user_data:
-        UserHTTPException.raise_http_404()
-    
-    return user_data

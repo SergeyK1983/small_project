@@ -1,13 +1,12 @@
 from uuid import UUID
 
-from sqlalchemy import Select, delete, String, RowMapping, update
+from sqlalchemy import Result, Select, delete, String, RowMapping, exists, select, update, and_
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.models.user import User
-from src.auth.repository.user_base_repository import (
-    RepositoryDatabaseError, RepositoryIntegrityError, UserBaseRepo,
-)
+from src.auth.repository.user_base_repository import UserBaseRepo
+from src.core.exceptions import RepositoryDatabaseError, RepositoryIntegrityError
 from src.auth.schemas.output.user_base import UserBase
 from src.auth.schemas.output.user_delete import UserDeleted
 from src.core.logger import logger
@@ -73,6 +72,26 @@ class UserRegisteredRepo(UserBaseRepo):
         
         if not username and not email:
             raise ValueError("is_unique_user: username and email at least one must be passed")
+    
+    @classmethod
+    async def is_exists_user_by_id(cls, user_id: UUID, db: AsyncSession) -> bool:
+        """ Вернет True, если пользователь существует, иначе False """
+
+        query: Select = select(exists().where(User.id == user_id))     
+        
+        result: Result = await cls._select_execute_query(query, db)
+        is_exists: bool = result.scalar() # type: ignore
+        return is_exists
+    
+    @classmethod
+    async def is_exists_and_active_user_by_id(cls, user_id: UUID, db: AsyncSession) -> bool:
+        """ Вернет True, если пользователь существует и активен, иначе False """
+
+        query: Select = select(exists().where(and_(User.id == user_id, User.is_active == True)))     
+        
+        result: Result = await cls._select_execute_query(query, db)
+        is_exists: bool = result.scalar() # type: ignore
+        return is_exists
 
     @classmethod
     async def delete_user(cls, user_id: UUID, db: AsyncSession) -> UserDeleted | None:
@@ -129,15 +148,7 @@ class UserRegisteredRepo(UserBaseRepo):
                 User.id == user_id
             ).
             returning(
-                User.id,
-                User.username,
-                User.email,
-                User.is_active,
-                User.is_staff,
-                User.is_superuser,
-                User.first_name,
-                User.second_name,
-                User.last_name,
+                User
             )
         )
 
@@ -154,4 +165,4 @@ class UserRegisteredRepo(UserBaseRepo):
             return None
         logger.success("Данные пользователя id - {} изменены", user_id)
         
-        return UserBase(**user_map)
+        return UserBase.model_validate(user_map["User"], from_attributes=True)

@@ -11,7 +11,15 @@ from src.auth.utils.token import TypeCookieToken, TypeHeaderToken
 from src.core.logger import logger
 
 
-EXCLUDED_PATHS = {"/auth/v1/signup", "/auth/v1/login", "/docs", "/redoc", "/openapi.json"}
+EXCLUDED_PATHS = {
+    "/auth/v1/signup",
+    "/auth/v1/login",
+    "/docs",
+    "/redoc",
+    "/openapi.json",
+    "/pay-system/v1/transaction-amount",
+    "/pay-system/v1/transaction-webhook"
+}
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -20,7 +28,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         if request.url.path in EXCLUDED_PATHS:
             return await call_next(request)
-        if "/admin" in request.url.path:
+        if "/admin-smp" in request.url.path:
             return await call_next(request)
 
         token = None

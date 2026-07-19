@@ -6,7 +6,8 @@ from src.auth.api.v1.api_router import router
 from src.auth.utils.depends import get_token_payload
 from src.core.dependencies import get_async_db
 from src.auth.services.auth_service import AuthUserService
-from src.auth.exceptions import AuthHTTPException, RepositoryError
+from src.auth.exceptions import AuthHTTPException
+from src.core.exceptions import RepositoryError
 from src.core.logger import logger
 
 if TYPE_CHECKING:
