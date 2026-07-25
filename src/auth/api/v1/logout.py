@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import Depends, status
+from fastapi import Depends, Response, status
+from fastapi.responses import JSONResponse
 
 from src.auth.api.v1.api_router import router
 from src.auth.utils.depends import get_token_payload
@@ -23,7 +24,7 @@ if TYPE_CHECKING:
 async def logout_user(
     token_payload: Annotated["Payload", Depends(get_token_payload)],
     db: Annotated["AsyncSession", Depends(get_async_db)],
-) -> dict:
+) -> Response:
     """
     Выход пользователя из системы
     Args:
@@ -38,4 +39,10 @@ async def logout_user(
     except Exception as exp:
         logger.error("logout_user: {}", str(exp))
         AuthHTTPException.raise_http_500()
-    return {"msg": "Exit"}
+
+    resp = JSONResponse(
+        content={"msg": "Exit"},
+        status_code=status.HTTP_200_OK
+    )
+    resp.delete_cookie(key="access_token", httponly=True)
+    return resp
