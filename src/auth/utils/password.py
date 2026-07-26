@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from src.auth.utils.hasher import Argon2Hasher
     from src.auth.schemas.input.change_pwd_schema import UserChangePasswordSchema
     from src.auth.schemas.output.user_base import UserWithPassword
+    from src.auth.schemas.output.change_pwd import UserChangePWD
 
 
 class Password:
@@ -44,7 +45,7 @@ class Password:
         if not verify:
             raise InvalidCredentialsException()
         
-        resp: dict = await UserPasswordRepo.rehash_user_password(
+        resp: "UserChangePWD" = await UserPasswordRepo.rehash_user_password(
             user_id=user_id, password=data.password_new, db=db
         )
         return resp
