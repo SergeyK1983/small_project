@@ -1,0 +1,235 @@
+/* ==========================================
+   Payment page
+   ========================================== */
+
+.payment-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    max-width: 650px;
+}
+
+
+.form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.form-group label {
+    font-weight: 500;
+}
+
+
+.form-group input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding:
+        10px
+        12px;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius:
+        6px;
+
+    font-size:
+        15px;
+}
+
+
+.form-group input:focus {
+    outline:
+        none;
+
+    border-color:
+        #84adff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(47, 128, 237, 0.12);
+}
+
+
+.form-help {
+    margin:
+        0;
+
+    color:
+        #667085;
+
+    font-size:
+        13px;
+}
+
+
+.form-actions {
+    display: flex;
+
+    justify-content: flex-start;
+
+    margin-top:
+        8px;
+}
+
+
+/* ==========================================
+   Result
+   ========================================== */
+
+#payment-result {
+    margin-top:
+        24px;
+}
+
+
+.result-info {
+    margin-bottom:
+        24px;
+
+    padding:
+        14px
+        16px;
+
+    border:
+        1px solid #eaecf0;
+
+    border-radius:
+        8px;
+
+    background:
+        #f9fafb;
+}
+
+
+.result-row {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap:
+        20px;
+}
+
+
+.result-value {
+    font-weight:
+        600;
+}
+
+
+.result-id {
+    font-family:
+        monospace;
+
+    font-size:
+        13px;
+
+    word-break:
+        break-all;
+
+    text-align:
+        right;
+}
+
+
+/* ==========================================
+   Result sections
+   ========================================== */
+
+.result-section {
+    margin-top:
+        28px;
+}
+
+
+.result-section h3 {
+    margin:
+        0 0 12px;
+
+    font-size:
+        18px;
+}
+
+
+.result-section .data-table {
+    min-width:
+        600px;
+}
+
+
+/* ==========================================
+   Failed operation
+   ========================================== */
+
+.payment-failed {
+    margin-top:
+        20px;
+
+    padding:
+        16px;
+
+    border:
+        1px solid #fecdca;
+
+    border-radius:
+        8px;
+
+    background:
+        #fef3f2;
+}
+
+
+.payment-failed-message {
+    margin:
+        0;
+
+    color:
+        #b42318;
+
+    font-weight:
+        500;
+}
+
+
+/* ==========================================
+   Responsive
+   ========================================== */
+
+@media (max-width: 700px) {
+
+    .result-row {
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+
+    .result-id {
+        text-align:
+            left;
+    }
+
+
+    .result-section .table-wrapper {
+        overflow-x:
+            auto;
+
+        -webkit-overflow-scrolling:
+            touch;
+    }
+
+}

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Авторизация</title>
+{% endblock title %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+{% endblock styles %}
+
+
+{% block main %}
+<main class="auth-container">
+
+    <section class="welcome-section">
+        <h1>Добро пожаловать!</h1>
+
+        <p>
+            Войдите в систему, чтобы получить доступ
+            к своему профилю и платежным счетам.
+        </p>
+    </section>
+    <!-- ==================== -->
+    <!-- Форма входа -->
+    <!-- ==================== -->
+    <section id="login-section" class="auth-section">
+        <h2>Вход</h2>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-username"> Username или Email </label>
+                <input
+                    id="login-username"
+                    name="usernameOrEmail"
+                    type="text"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="login-password"> Пароль </label>
+                <input
+                    id="login-password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <div id="login-error" class="form-error" hidden>
+
+            </div>
+
+            <button id="login-submit" type="submit">
+                Войти
+            </button>
+        </form>
+
+        <div class="auth-switch">
+            <span>Еще нет аккаунта?</span>
+
+            <button id="show-signup-button" type="button" class="link-button">
+                Зарегистрироваться
+            </button>
+        </div>
+
+    </section>
+    <!-- ==================== -->
+    <!-- Форма регистрации -->
+    <!-- ==================== -->
+    <section id="signup-section" class="auth-section" hidden>
+
+        <h2>Регистрация</h2>
+
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="signup-username"> Username </label>
+                <input
+                    id="signup-username"
+                    name="username"
+                    type="text"
+                    minlength="4"
+                    maxlength="125"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="signup-email"> Email </label>
+                <input
+                    id="signup-email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="signup-password"> Пароль </label>
+                <input
+                    id="signup-password"
+                    name="password"
+                    type="password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div id="signup-error" class="form-error" hidden>
+
+            </div>
+
+            <div id="signup-success" class="form-success" hidden>
+
+            </div>
+
+            <button id="signup-submit" type="submit">
+                Зарегистрироваться
+            </button>
+        </form>
+
+        <div class="auth-switch">
+
+            <span>Уже есть аккаунт?</span>
+
+            <button id="show-login-button" type="button" class="link-button">
+                Вернуться ко входу
+            </button>
+        </div>
+    </section>
+</main>
+{% endblock main %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', path='/js/auth.js') }}"></script>
+{% endblock scripts %}
+

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Личный кабинет</title>
+{% endblock title %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/profile_style.css') }}">
+{% endblock styles %}
+
+
+{% block main %}
+<main class="user-page">
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+
+    <header class="page-header">
+        <div class="page-header-content">
+            <h1>Личный кабинет</h1>
+            <p id="welcome-message"> Загрузка данных пользователя...</p>
+        </div>
+
+        <button id="logout-button" type="button" class="button button-secondary">
+            Выйти
+        </button>
+    </header>
+
+    <!-- ================================= -->
+    <!-- Loading -->
+    <!-- ================================= -->
+
+    <section id="loading-state" class="state-message" >
+        <div class="loader"></div>
+        <p> Загрузка данных...</p>
+    </section>
+
+    <!-- ================================= -->
+    <!-- Error -->
+    <!-- ================================= -->
+
+    <section id="error-state" class="state-message state-error" hidden >
+        <h2> Не удалось загрузить данные </h2>
+        <p id="error-message"> Произошла ошибка. </p>
+        <button id="retry-button" type="button" class="button" >
+            Повторить
+        </button>
+    </section>
+
+    <!-- ================================= -->
+    <!-- Main user content -->
+    <!-- ================================= -->
+
+    <div id="user-content" hidden >
+        <!-- ================================= -->
+        <!-- User information -->
+        <!-- ================================= -->
+
+        <section class="content-card" >
+            <div class="card-header" >
+                <h2> Данные пользователя </h2>
+                <p> Информация о вашей учетной записи </p>
+            </div>
+            <div class="table-wrapper" >
+                <table class="data-table" >
+                    <tbody>
+                        <tr>
+                            <th> ID </th>
+                            <td id="user-id"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Username </th>
+                            <td id="user-username"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Email </th>
+                            <td id="user-email"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Полное имя </th>
+                            <td id="user-full-name"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Имя </th>
+                            <td id="user-first-name"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Фамилия </th>
+                            <td id="user-second-name"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Отчество </th>
+                            <td id="user-last-name"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Активен </th>
+                            <td id="user-active"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Сотрудник </th>
+                            <td id="user-staff"> — </td>
+                        </tr>
+
+                        <tr>
+                            <th> Администратор </th>
+                            <td id="user-superuser"> — </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ================================= -->
+        <!-- Account actions -->
+        <!-- ================================= -->
+        <section class="content-card">
+            <div class="card-header">
+                <h2> Управление аккаунтом </h2>
+                <p> Управление вашими данными и настройками безопасности </p>
+            </div>
+            <div class="actions-grid">
+                <a href="/dev/user/update" class="button" > Изменить данные </a>
+                <a href="/dev/user/change-password" class="button" > Сменить пароль </a>
+                <a href="/dev/accounts" class="button"> Мои счета </a>
+                <!--
+                    Эта кнопка будет показана
+                    JavaScript только для
+                    is_superuser === true.
+                -->
+                <a id="admin-users-link" href="/dev/admin/users" class="button button-admin" hidden> Все пользователи </a>
+            </div>
+        </section>
+
+        <!-- ================================= -->
+        <!-- Delete account -->
+        <!-- ================================= -->
+        <section class="content-card danger-card">
+            <div class="card-header">
+                <h2> Удаление аккаунта </h2>
+                <p> Удаление аккаунта является необратимым действием. </p>
+            </div>
+
+            <button id="delete-account-button" type="button" class="button button-danger">
+                Удалить аккаунт
+            </button>
+        </section>
+    </div>
+</main>
+{% endblock main %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', path='js/user.js') }}"></script>
+{% endblock scripts %}
