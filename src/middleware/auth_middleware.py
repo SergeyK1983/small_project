@@ -20,6 +20,7 @@ EXCLUDED_PATHS = {
     "/openapi.json",
     "/pay-system/v1/transaction-amount",
     "/pay-system/v1/transaction-webhook",
+    "/dev/payment-operation"
 }
 
 
