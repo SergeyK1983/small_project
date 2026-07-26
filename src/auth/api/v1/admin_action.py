@@ -9,7 +9,7 @@ from src.auth.schemas.output.admin_schemas import Users
 from src.auth.schemas.output.user_base import UserBase
 from src.auth.schemas.output.user_delete import UserDeleted
 from src.auth.services.admin_service import AdminActionService
-from src.auth.services.user_service import UserDoesNotExistException
+from src.auth.services.user_service import UserActionsService, UserDoesNotExistException
 from src.auth.utils.depends import check_admin_user
 from src.core.dependencies import get_async_db
 from src.auth.exceptions import AuthHTTPException, UserHTTPException
@@ -54,6 +54,36 @@ async def get_users(
         AuthHTTPException.raise_http_500()
 
     return users_data
+
+
+@router.get(
+    "/adm-user/{user_id}",
+    dependencies=[Depends(check_admin_user)],
+    response_model=UserBase,
+    status_code=status.HTTP_200_OK,
+    name="get_user_for_admin",
+    summary="Данные о пользователе",
+    description="""
+        Только для администратора. Просмотр информации о пользователе.
+    """
+)
+async def get_user_to_admin(
+    user_id: Annotated[UUID, Path(title="id of a user")],
+    db: Annotated["AsyncSession", Depends(get_async_db)]
+) -> UserBase:
+
+    try:
+        user_data: UserBase | None = await UserActionsService().read_user(user_id, db)
+    except RepositoryError:
+        AuthHTTPException.raise_http_500()
+    except Exception as exp:
+        logger.error("register: {}", str(exp))
+        AuthHTTPException.raise_http_500()
+    
+    if not user_data:
+        UserHTTPException.raise_http_404()
+
+    return user_data
 
 
 @router.delete(

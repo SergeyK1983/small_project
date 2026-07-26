@@ -40,3 +40,18 @@ async def get_cash_payments(request: Request):
 @index_router.get("/payment-operation", name="payment_page")
 async def get_payment_amount(request: Request): 
     return templates.TemplateResponse(request=request, name="pay/payment.html", status_code=status.HTTP_200_OK)
+
+
+@index_router.get("/admin/users", name="users_page")
+async def get_users(request: Request):
+    return templates.TemplateResponse(request=request, name="admin/users.html", status_code=status.HTTP_200_OK)
+
+
+@index_router.get("/admin/user/update", name="adm_update_user_page")
+async def update_user_by_admin(request: Request):
+    return templates.TemplateResponse(request=request, name="admin/user_update.html", status_code=status.HTTP_200_OK)
+
+
+@index_router.get("/admin/user/accounts", name="adm_user_accounts_page")
+async def get_user_accounts_by_admin(request: Request):
+    return templates.TemplateResponse(request=request, name="admin/cash_accounts.html", status_code=status.HTTP_200_OK)
