@@ -11,9 +11,8 @@ def validate_username(username: str) -> str:
     Return:
         str - username of user or raise ValueError
     """
-    regex = r"^[\w]+$"
-    p = re.compile(regex)
-    if p.match(username):
+    regex = r"^[a-zA-Z0-9_]+$"
+    if re.match(regex, username):
         return username
     raise ValueError("Username can only contain Latin letters, numbers, and _")
 
