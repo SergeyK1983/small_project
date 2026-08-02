@@ -37,79 +37,80 @@ from src.core.database import db_helper
 #     assert isinstance(result.get("token"), str) is True
 #     assert result.get("token_type") == "JWT "
 
+class TestLoginUser:
 
-@patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
-def test_login_user_by_username(mock_user, client):
-    user = UserFactory.build(id=uuid4(), username="test_user")
-    mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
+    @patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
+    def test_login_user_by_username(self, mock_user, client):
+        user = UserFactory.build(id=uuid4(), username="test_user")
+        mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
 
-    response = client.post(
-        "/auth/v1/login",
-        json={"username": "test_user", "password": "test_password"}
-    )
+        response = client.post(
+            "/auth/v1/login",
+            json={"username": "test_user", "password": "test_password"}
+        )
 
-    result = response.json()
-    assert response.status_code == 200
-    assert isinstance(result.get("token"), str) is True
-    assert result.get("token_type") == "JWT "
-
-
-@patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
-def test_login_user_by_email(mock_user, client):
-    user = UserFactory.build(id=uuid4(), username="test_user", email="test_user@example.com")
-    mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
-
-    response = client.post(
-        "/auth/v1/login",
-        json={"email": "test_user@example.com", "password": "test_password"}
-    )
-
-    result = response.json()
-    assert response.status_code == 200
-    assert isinstance(result.get("token"), str) is True
-    assert result.get("token_type") == "JWT "
+        result = response.json()
+        assert response.status_code == 200
+        assert isinstance(result.get("token"), str) is True
+        assert result.get("token_type") == "JWT "
 
 
-@patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
-def test_login_user_incorrect_pwd(mock_user, client):
-    user = UserFactory.build(id=uuid4(), username="test_user")
-    mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
+    @patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
+    def test_login_user_by_email(self, mock_user, client):
+        user = UserFactory.build(id=uuid4(), username="test_user", email="test_user@example.com")
+        mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
 
-    response = client.post(
-        "/auth/v1/login",
-        json={"username": "test_user", "password": "test_password1"}
-    )
+        response = client.post(
+            "/auth/v1/login",
+            json={"email": "test_user@example.com", "password": "test_password"}
+        )
 
-    result = response.json()
-    assert response.status_code == 401
-    assert result.get("detail") == "The password or username is incorrect."
-
-
-@patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
-def test_login_user_not_active_user(mock_user, client):
-    user = UserFactory.build(id=uuid4(), username="test_user", is_active=False)
-    mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
-
-    response = client.post(
-        "/auth/v1/login",
-        json={"username": "test_user", "password": "test_password"}
-    )
-
-    result = response.json()
-    assert response.status_code == 403
-    assert result.get("detail") == "Access is denied"
+        result = response.json()
+        assert response.status_code == 200
+        assert isinstance(result.get("token"), str) is True
+        assert result.get("token_type") == "JWT "
 
 
-@patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
-def test_login_user_none_user(mock_user, client):
-    mock_user.return_value = None
+    @patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
+    def test_login_user_incorrect_pwd(self, mock_user, client):
+        user = UserFactory.build(id=uuid4(), username="test_user")
+        mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
 
-    response = client.post(
-        "/auth/v1/login",
-        json={"username": "test_user", "password": "test_password1"}
-    )
+        response = client.post(
+            "/auth/v1/login",
+            json={"username": "test_user", "password": "test_password1"}
+        )
 
-    result = response.json()
-    assert response.status_code == 401
-    assert result.get("detail") == "The password or username is incorrect."
+        result = response.json()
+        assert response.status_code == 401
+        assert result.get("detail") == "The password or username is incorrect."
+
+
+    @patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
+    def test_login_user_not_active_user(self, mock_user, client):
+        user = UserFactory.build(id=uuid4(), username="test_user", is_active=False)
+        mock_user.return_value = UserWithPassword.model_validate(user, from_attributes=True)
+
+        response = client.post(
+            "/auth/v1/login",
+            json={"username": "test_user", "password": "test_password"}
+        )
+
+        result = response.json()
+        assert response.status_code == 403
+        assert result.get("detail") == "Access is denied"
+
+
+    @patch("src.auth.services.auth_service.UserPasswordRepo.read_user_with_password")
+    def test_login_user_none_user(self, mock_user, client):
+        mock_user.return_value = None
+
+        response = client.post(
+            "/auth/v1/login",
+            json={"username": "test_user", "password": "test_password1"}
+        )
+
+        result = response.json()
+        assert response.status_code == 401
+        assert result.get("detail") == "The password or username is incorrect."
 
