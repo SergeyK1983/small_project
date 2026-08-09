@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, status
 from fastapi.templating import Jinja2Templates
 
 
-index_router = APIRouter(prefix="/dev", tags=["homepage"])
+index_router = APIRouter(prefix="/dev", tags=["homepage"], include_in_schema=False)
 
 templates = Jinja2Templates(directory="src/templates")
 
