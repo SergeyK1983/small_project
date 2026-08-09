@@ -9,4 +9,6 @@
 /temp
 /log
 /logs
+/htmlcov
+.coverage
 .env
