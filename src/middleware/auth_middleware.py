@@ -12,13 +12,15 @@ from src.core.logger import logger
 
 
 EXCLUDED_PATHS = {
+    "/dev",
     "/auth/v1/signup",
     "/auth/v1/login",
     "/docs",
     "/redoc",
     "/openapi.json",
     "/pay-system/v1/transaction-amount",
-    "/pay-system/v1/transaction-webhook"
+    "/pay-system/v1/transaction-webhook",
+    "/dev/payment-operation"
 }
 
 
@@ -29,6 +31,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in EXCLUDED_PATHS:
             return await call_next(request)
         if "/admin-smp" in request.url.path:
+            return await call_next(request)
+        if "/static" in request.url.path or "/favicon" in request.url.path:
             return await call_next(request)
 
         token = None

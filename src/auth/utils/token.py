@@ -13,7 +13,7 @@ from src.core.logger import logger
 
 
 class TypeHeaderToken(Enum):
-    ACCESS = APIKeyHeader(name="Authorization")
+    ACCESS = APIKeyHeader(name="Authorization", auto_error=False)
     ACCESS_MIDDLEWARE = "Authorization"
 
     @classmethod
@@ -22,7 +22,7 @@ class TypeHeaderToken(Enum):
 
 
 class TypeCookieToken(Enum):
-    ACCESS = APIKeyCookie(name="access_token")
+    ACCESS = APIKeyCookie(name="access_token", auto_error=False)
     ACCESS_MIDDLEWARE = "access_token"
 
     @classmethod

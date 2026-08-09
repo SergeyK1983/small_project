@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Платежная операция</title>
+{% endblock title %}
+
+
+{% block styles %}
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/profile_style.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/payment_style.css') }}"
+    >
+
+{% endblock styles %}
+
+
+{% block main %}
+
+<main class="user-page">
+
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+
+    <header class="page-header">
+
+        <div class="page-header-content">
+
+            <h1>
+                Платежная операция
+            </h1>
+
+            <p>
+                Выполнение операции по платежному счету
+            </p>
+
+        </div>
+
+
+        <div class="page-header-actions">
+
+            <a
+                href="/dev/accounts"
+                class="button button-secondary"
+            >
+                Мои счета
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================================= -->
+    <!-- Payment form -->
+    <!-- ================================= -->
+
+    <section class="content-card">
+
+        <div class="card-header">
+
+            <h2>
+                Выполнить платеж
+            </h2>
+
+            <p>
+                Укажите счет и сумму операции.
+            </p>
+
+        </div>
+
+
+        <form
+            id="payment-form"
+            class="payment-form"
+        >
+
+            <!-- ================================= -->
+            <!-- Account ID -->
+            <!-- ================================= -->
+
+            <div class="form-group">
+
+                <label
+                    for="account-id"
+                >
+                    ID счета
+                </label>
+
+                <input
+                    id="account-id"
+                    name="account_id"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Например: b4062279-7586-4aff-91d1-2a755c8d28c8"
+                    required
+                >
+
+                <p class="form-help">
+                    Укажите UUID платежного счета.
+                </p>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Amount -->
+            <!-- ================================= -->
+
+            <div class="form-group">
+
+                <label
+                    for="amount"
+                >
+                    Сумма операции
+                </label>
+
+                <input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    step="0.01"
+                    placeholder="Например: 4000 или -14000"
+                    required
+                >
+
+                <p class="form-help">
+                    Положительная сумма — пополнение.
+                    Отрицательная сумма — списание.
+                </p>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Submit -->
+            <!-- ================================= -->
+
+            <div class="form-actions">
+
+                <button
+                    id="payment-submit-button"
+                    type="submit"
+                    class="button"
+                >
+                    Выполнить операцию
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- Result -->
+    <!-- ================================= -->
+
+    <section
+        id="payment-result"
+        class="content-card"
+        hidden
+    >
+
+        <div class="card-header">
+
+            <h2 id="result-title">
+                Результат операции
+            </h2>
+
+            <p id="result-message">
+            </p>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Successful operation -->
+        <!-- ================================= -->
+
+        <div
+            id="success-result"
+            hidden
+        >
+
+            <div class="result-info">
+
+                <div class="result-row">
+
+                    <span>
+                        Transaction ID
+                    </span>
+
+                    <span
+                        id="transaction-id"
+                        class="result-value result-id"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Updated account -->
+            <!-- ================================= -->
+
+            <div class="result-section">
+
+                <h3>
+                    Состояние счета
+                </h3>
+
+
+                <div class="table-wrapper">
+
+                    <table class="data-table">
+
+                        <tbody>
+
+                            <tr>
+
+                                <th>
+                                    ID счета
+                                </th>
+
+                                <td id="result-account-id">
+                                    —
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+                                    Валюта
+                                </th>
+
+                                <td id="result-account-currency">
+                                    —
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+                                    Баланс
+                                </th>
+
+                                <td id="result-account-balance">
+                                    —
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+                                    Обновлен
+                                </th>
+
+                                <td id="result-account-updated">
+                                    —
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Created payment -->
+            <!-- ================================= -->
+
+            <div class="result-section">
+
+                <h3>
+                    Операция
+                </h3>
+
+
+                <div class="table-wrapper">
+
+                    <table class="data-table">
+
+                        <tbody>
+
+                            <tr>
+
+                                <th>
+                                    ID операции
+                                </th>
+
+                                <td id="result-payment-id">
+                                    —
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+                                    Сумма
+                                </th>
+
+                                <td id="result-payment-amount">
+                                    —
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <th> Описание </th>
+                                <td id="result-payment-description"> — </td>
+                            </tr>
+
+                            <tr>
+                                <th> Создана </th>
+                                <td id="result-payment-created"> — </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================= -->
+        <!-- Failed operation -->
+        <!-- ================================= -->
+        <div id="failed-result" class="payment-failed" hidden >
+            <p id="failed-message" class="payment-failed-message" ></p>
+        </div>
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- API Error -->
+    <!-- ================================= -->
+    <section
+        id="error-state"
+        class="state-message state-error"
+        hidden
+    >
+        <h2> Не удалось выполнить операцию </h2>
+        <p id="error-message"> Произошла ошибка. </p>
+    </section>
+</main>
+{% endblock main %}
+
+{% block scripts %}
+<script
+    src="{{ url_for('static', path='/js/payment.js') }}"
+></script>
+{% endblock scripts %}

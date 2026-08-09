@@ -4,7 +4,7 @@ from fastapi import Depends, Request
 
 from src.auth.exceptions import AuthHTTPException
 from .auth import Authentication
-from .token import TypeHeaderToken, app_token, Payload
+from .token import TypeCookieToken, TypeHeaderToken, app_token, Payload
 
 
 async def authenticate_middleware(request: Request, token: str) -> bool:
@@ -15,10 +15,15 @@ async def authenticate_middleware(request: Request, token: str) -> bool:
     return auth
 
 
-async def get_token_payload(token: Annotated[str, Depends(TypeHeaderToken.ACCESS.value)]) -> Payload:
+async def get_token_payload(
+    token_header: Annotated[str, Depends(TypeHeaderToken.ACCESS.value)],
+    token_cookie: Annotated[str, Depends(TypeCookieToken.ACCESS.value)],
+) -> Payload:
     """ Вернет полезную нагрузку токена """
-    
-    payload: Payload = app_token.verify_access_token(token)
+    if token_header:
+        payload: Payload = app_token.verify_access_token(token_header)
+    else:
+        payload: Payload = app_token.verify_access_token(token_cookie)
     return payload
 
 

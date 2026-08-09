@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import RowMapping, Select, exists, select
+from sqlalchemy import RowMapping, Select, desc, exists, select
 
 from src.pay_system.models.cash_payment import CashPayment
 from src.pay_system.schemas.output.cash_payment_base import CashPaymentBase
@@ -24,7 +24,14 @@ class CashPaymentRepo(CashPaymentBaseRepo):
     
     @classmethod
     async def select_payments_by_account(cls, account_id: UUID, db: AsyncSession) -> list[CashPaymentBase]:
-        query = cls._select_cash_payment_fields().where(CashPayment.account_rub_id == account_id)
+        query = (
+            cls._select_cash_payment_fields().where(
+                CashPayment.account_rub_id == account_id
+            ).
+            order_by(
+                desc(CashPayment.created)
+            )
+        )
 
         result = await cls._select_execute_query(query, db)
         rows: list[RowMapping] = result.mappings().fetchall()  # type: ignore # pet-проект, грузим всё в память

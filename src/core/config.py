@@ -50,6 +50,12 @@ class Settings(BaseSettings, case_sensitive=True):
     def async_postgresql_url(self) -> str:
         db_pass = self._get_db_pass()
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{db_pass}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
+
+    @property
+    def async_test_postgresql_url(self) -> str:
+        """ Для тестов """
+        db_pass = self._get_db_pass()
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{db_pass}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/test_db"
     
     @property
     def public_key(self):

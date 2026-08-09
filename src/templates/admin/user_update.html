@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Изменение пользователя</title>
+{% endblock title %}
+
+
+{% block styles %}
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/profile_style.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/admin_user_update_style.css') }}"
+    >
+
+{% endblock styles %}
+
+
+{% block main %}
+
+<main class="user-page">
+
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+
+    <header class="page-header">
+
+        <div class="page-header-content">
+
+            <h1>
+                Изменение пользователя
+            </h1>
+
+            <p id="user-description">
+                Загрузка данных пользователя...
+            </p>
+
+        </div>
+
+
+        <div class="page-header-actions">
+
+            <a
+                href="/dev/admin/users"
+                class="button button-secondary"
+            >
+                Все пользователи
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================================= -->
+    <!-- Loading -->
+    <!-- ================================= -->
+
+    <section
+        id="loading-state"
+        class="state-message"
+    >
+
+        <div class="loader"></div>
+
+        <p>
+            Загрузка данных пользователя...
+        </p>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- Error -->
+    <!-- ================================= -->
+
+    <section
+        id="error-state"
+        class="state-message state-error"
+        hidden
+    >
+
+        <h2>
+            Не удалось загрузить данные
+        </h2>
+
+        <p id="error-message">
+            Произошла ошибка.
+        </p>
+
+        <button
+            id="retry-button"
+            type="button"
+            class="button"
+        >
+            Повторить
+        </button>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- Main content -->
+    <!-- ================================= -->
+
+    <div
+        id="user-content"
+        hidden
+    >
+
+        <!-- ================================= -->
+        <!-- User information -->
+        <!-- ================================= -->
+
+        <section class="content-card">
+
+            <div class="card-header">
+
+                <h2>
+                    Данные пользователя
+                </h2>
+
+                <p>
+                    Информация об учетной записи
+                </p>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <tbody>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <td id="user-id">
+                                —
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Username
+                            </th>
+
+                            <td id="user-username">
+                                —
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <td id="user-email">
+                                —
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Полное имя
+                            </th>
+
+                            <td id="user-full-name">
+                                —
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Имя
+                            </th>
+
+                            <td id="user-first-name">
+                                —
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Фамилия
+                            </th>
+
+                            <td id="user-second-name">
+                                —
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Отчество
+                            </th>
+
+                            <td id="user-last-name">
+                                —
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- Admin settings -->
+        <!-- ================================= -->
+
+        <section class="content-card">
+
+            <div class="card-header">
+
+                <h2>
+                    Административные настройки
+                </h2>
+
+                <p>
+                    Изменение статуса и прав пользователя
+                </p>
+
+            </div>
+
+
+            <form
+                id="admin-user-form"
+                class="admin-user-form"
+            >
+
+                <!-- ================================= -->
+                <!-- Active -->
+                <!-- ================================= -->
+
+                <div class="form-checkbox">
+
+                    <input
+                        id="is-active"
+                        name="is_active"
+                        type="checkbox"
+                    >
+
+                    <label for="is-active">
+                        Пользователь активен
+                    </label>
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- Staff -->
+                <!-- ================================= -->
+
+                <div class="form-checkbox">
+
+                    <input
+                        id="is-staff"
+                        name="is_staff"
+                        type="checkbox"
+                    >
+
+                    <label for="is-staff">
+                        Сотрудник
+                    </label>
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- Superuser -->
+                <!-- ================================= -->
+
+                <div class="form-checkbox">
+
+                    <input
+                        id="is-superuser"
+                        name="is_superuser"
+                        type="checkbox"
+                    >
+
+                    <label for="is-superuser">
+                        Администратор
+                    </label>
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- Actions -->
+                <!-- ================================= -->
+
+                <div class="form-actions">
+
+                    <button
+                        id="save-button"
+                        type="submit"
+                        class="button"
+                    >
+                        Сохранить изменения
+                    </button>
+
+
+                    <a
+                        href="/dev/admin/users"
+                        class="button button-secondary"
+                    >
+                        Отмена
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- Success -->
+        <!-- ================================= -->
+
+        <section
+            id="success-state"
+            class="state-message state-success"
+            hidden
+        >
+
+            <h2>
+                Изменения сохранены
+            </h2>
+
+            <p id="success-message">
+                Данные пользователя успешно обновлены.
+            </p>
+
+        </section>
+
+    </div>
+
+</main>
+
+{% endblock main %}
+
+
+{% block scripts %}
+
+<script
+    src="{{ url_for('static', path='/js/admin_user_update.js') }}"
+></script>
+
+{% endblock scripts %}

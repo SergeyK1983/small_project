@@ -4,6 +4,7 @@ from sqlalchemy import select, update, String, Select, RowMapping
 from sqlalchemy.exc import IntegrityError, DatabaseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.schemas.output.change_pwd import UserChangePWD
 from src.core.exceptions import RepositoryDatabaseError, RepositoryError, RepositoryIntegrityError
 from src.auth.models.user import User
 from src.auth.repository.user_base_repository import UserBaseRepo
@@ -47,7 +48,7 @@ class UserPasswordRepo(UserBaseRepo):
     @classmethod
     async def rehash_user_password(
         cls, user_id: UUID, password: str, db: AsyncSession
-    ) -> dict:
+    ) -> UserChangePWD:
         """
         Обновляет запись пользователя в БД - рехэш пароля.
         Args:
@@ -55,9 +56,9 @@ class UserPasswordRepo(UserBaseRepo):
             password: new password to update user
             db: AsyncSession
         """
-        user_data: dict = await cls._change_user_password(user_id, password, db)
+        user_data: UserChangePWD = await cls._change_user_password(user_id, password, db)
         if user_data:
-            logger.success("Rehash пароля пользователя {}", user_data.get("username"))
+            logger.success("Rehash пароля пользователя {}", user_data.username)
         return user_data
 
     @staticmethod
@@ -73,7 +74,7 @@ class UserPasswordRepo(UserBaseRepo):
     @classmethod
     async def _change_user_password(
         cls, user_id: UUID, password: str, db: AsyncSession
-    ) -> dict:
+    ) -> UserChangePWD:
         """
         Обновляет запись пользователя в БД - смена пароля.
         Args:
@@ -103,4 +104,4 @@ class UserPasswordRepo(UserBaseRepo):
         if user_map is None:
             raise RepositoryError("User password change error, user must not be None")
 
-        return {**user_map}
+        return UserChangePWD(**user_map)

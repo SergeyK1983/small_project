@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends, Request, status, Response, Body
+from fastapi.responses import JSONResponse
 
 from src.auth.api.v1.api_router import router
 from src.auth.schemas.input.change_pwd_schema import UserChangePasswordSchema
@@ -13,11 +14,11 @@ from src.core.logger import logger
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
+    from src.auth.schemas.output.change_pwd import UserChangePWD
 
 
 @router.patch(
     "/change-password",
-    status_code=status.HTTP_200_OK,
     name="change_password",
     description="""
         Смена пароля пользователем. Фронт должен выполнить logout.\n
@@ -40,10 +41,12 @@ async def change_user_password(
     try:
         body_data.password_new = password.hashing_password(body_data.password_new)
 
-        resp: dict = await password.change_password(user_id=request.state.user.id, data=body_data, db=db)
+        resp: "UserChangePWD" = await password.change_password(user_id=request.state.user.id, data=body_data, db=db)
 
+        response = JSONResponse(content=resp.model_dump(), status_code=status.HTTP_200_OK)
+        response.delete_cookie(key="access_token", httponly=True)
     except (NoneUserModelException, InvalidCredentialsException):
-        AuthHTTPException.raise_http_401(
+        AuthHTTPException.raise_http_400(
             detail="The password or email is incorrect."
         )    
     except HasherError as exp:
@@ -55,4 +58,4 @@ async def change_user_password(
     except Exception as exp:
         logger.error("change_password: {}", str(exp))
         AuthHTTPException.raise_http_500()
-    return Response(content=f"Пароль изменён, пользователь {resp["id"]}")
+    return response
