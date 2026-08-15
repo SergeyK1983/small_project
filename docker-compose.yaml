@@ -36,7 +36,7 @@ services:
     volumes:
       - ./src/static:/var/www/smp/static:ro
     ports:
-      - "8080:80"
+      - "8090:80"
     depends_on:
       - project
   
