@@ -39,7 +39,7 @@ app.add_middleware(
     allow_headers=settings.ALLOW_HEADERS,
     expose_headers=["access_token", "Authorization"],
 )
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost",  settings.ALLOWED_HOST])
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["0.0.0.0", "127.0.0.1", "localhost",  settings.ALLOWED_HOST])
 
 # admin-panel
 setup_admin(app)

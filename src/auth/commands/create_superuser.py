@@ -4,7 +4,7 @@ from src.auth.repository.user_register_repository import UserRegisterRepo
 from src.auth.schemas.input.user_auth_schema import UserAuthSchema
 from src.auth.utils.password import password
 from src.core.database import db_helper
-
+from rich import print
 
 async def create_superuser(username: str, pwd: str) -> str:
     """
@@ -29,7 +29,8 @@ async def create_superuser(username: str, pwd: str) -> str:
 
         if exists is False:
             result = await UserRegisterRepo.create_superuser(admin.username, admin.email, admin.password, session) # type: ignore
-    except Exception:
+    except Exception as exp:
+        print(f"{str(exp) = }")
         pass
     finally:
         await session.close()
