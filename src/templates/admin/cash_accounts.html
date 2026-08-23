@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Счета пользователя</title>
+{% endblock title %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/profile_style.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/admin_cash_accounts_style.css') }}" >
+{% endblock styles %}
+
+
+{% block main %}
+<main class="user-page">
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+    <header class="page-header">
+        <div class="page-header-content">
+            <h1>
+                Счета и балансы
+            </h1>
+
+            <p id="user-description">
+                Загрузка данных пользователя...
+            </p>
+        </div>
+
+        <div class="page-header-actions">
+            <a
+                href="/dev/admin/users"
+                class="button button-secondary"
+            >
+                Все пользователи
+            </a>
+        </div>
+    </header>
+
+    <!-- ================================= -->
+    <!-- Loading -->
+    <!-- ================================= -->
+    <section
+        id="loading-state"
+        class="state-message"
+    >
+        <div class="loader"></div>
+        <p>
+            Загрузка счетов...
+        </p>
+    </section>
+
+    <!-- ================================= -->
+    <!-- Error -->
+    <!-- ================================= -->
+    <section
+        id="error-state"
+        class="state-message state-error"
+        hidden
+    >
+
+        <h2> Не удалось загрузить счета </h2>
+
+        <p id="error-message">
+            Произошла ошибка.
+        </p>
+
+        <button
+            id="retry-button"
+            type="button"
+            class="button"
+        >
+            Повторить
+        </button>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- Content -->
+    <!-- ================================= -->
+
+    <div
+        id="accounts-content"
+        hidden
+    >
+
+        <!-- ================================= -->
+        <!-- User information -->
+        <!-- ================================= -->
+
+        <section class="content-card">
+
+            <div class="card-header">
+
+                <h2>
+                    Пользователь
+                </h2>
+
+                <p>
+                    Идентификатор пользователя
+                </p>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <tbody>
+
+                        <tr>
+
+                            <th>
+                                User ID
+                            </th>
+
+                            <td id="user-id">
+                                —
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- Accounts -->
+        <!-- ================================= -->
+
+        <section class="content-card">
+
+            <div class="card-header accounts-card-header">
+
+                <div>
+                    <h2>
+                        Платежные счета
+                    </h2>
+
+                    <p>
+                        Просмотр счетов и текущих балансов пользователя
+                    </p>
+                </div>
+
+                <button
+                    id="create-account-button"
+                    type="button"
+                    class="button"
+                >
+                    Создать счёт
+                </button>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Create account result -->
+            <!-- ================================= -->
+
+            <div
+                id="create-account-message"
+                class="action-message"
+                hidden
+            >
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Empty accounts -->
+            <!-- ================================= -->
+
+            <div
+                id="empty-accounts"
+                class="empty-message"
+                hidden
+            >
+
+                <p>
+                    У пользователя нет платежных счетов.
+                </p>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- Accounts table -->
+            <!-- ================================= -->
+
+            <div
+                id="accounts-table-wrapper"
+                class="table-wrapper"
+                hidden
+            >
+
+                <table class="data-table accounts-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Валюта
+                            </th>
+
+                            <th>
+                                Баланс
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                        id="accounts-table-body"
+                    >
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+{% endblock main %}
+
+
+{% block scripts %}
+
+<script
+    src="{{ url_for('static', path='/js/admin_cash_accounts.js') }}"
+></script>
+
+{% endblock scripts %}

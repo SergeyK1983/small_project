@@ -9,4 +9,7 @@
 /temp
 /log
 /logs
+/htmlcov
+/fake_secrets
+.coverage
 .env

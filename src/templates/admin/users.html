@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Все пользователи</title>
+{% endblock title %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/profile_style.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/admin_users_style.css') }}" >
+{% endblock styles %}
+
+
+{% block main %}
+<main class="user-page">
+
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+    <header class="page-header">
+        <div class="page-header-content">
+            <h1> Все пользователи </h1>
+            <p id="users-count-message"> Загрузка списка пользователей... </p>
+        </div>
+
+        <div class="page-header-actions">
+            <a href="/dev/user" class="button button-secondary" > Личный кабинет </a>
+        </div>
+    </header>
+
+    <!-- ================================= -->
+    <!-- Loading -->
+    <!-- ================================= -->
+    <section id="loading-state" class="state-message" >
+        <div class="loader"></div>
+        <p> Загрузка пользователей... </p>
+    </section>
+
+    <!-- ================================= -->
+    <!-- Error -->
+    <!-- ================================= -->
+    <section id="error-state" class="state-message state-error" hidden >
+        <h2> Не удалось загрузить пользователей </h2>
+        <p id="error-message"> Произошла ошибка. </p>
+        <button id="retry-button" type="button" class="button" >
+            Повторить
+        </button>
+    </section>
+
+    <!-- ================================= -->
+    <!-- Users -->
+    <!-- ================================= -->
+    <section id="users-content" class="content-card" hidden >
+        <div class="card-header">
+            <h2> Пользователи </h2>
+            <p> Управление пользователями системы </p>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table users-table">
+                <thead>
+                    <tr>
+                        <th> ID </th>
+                        <th> Username </th>
+                        <th> Email </th>
+                        <th> Имя </th>
+                        <th> Фамилия </th>
+                        <th> Отчество </th>
+                        <th> Действия </th>
+                    </tr>
+                </thead>
+
+                <tbody id="users-table-body">
+                    <!-- Пользователи добавляются через JS -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock main %}
+
+
+{% block scripts %}
+<script
+    src="{{ url_for('static', path='/js/admin_users.js') }}"
+></script>
+{% endblock scripts %}

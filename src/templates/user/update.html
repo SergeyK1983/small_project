@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Изменение данных пользователя</title>
+{% endblock title %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/profile_style.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/user_update_style.css') }}" >
+{% endblock styles %}
+
+{% block main %}
+<main class="user-page">
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+    <header class="page-header">
+        <div class="page-header-content">
+            <h1> Изменение данных </h1>
+
+            <p> Измените данные вашей учетной записи </p>
+        </div>
+
+        <a href="/dev/user" class="button button-secondary" > Назад </a>
+    </header>
+    <!-- ================================= -->
+    <!-- Error -->
+    <!-- ================================= -->
+    <section id="error-state" class="state-message state-error" hidden >
+        <h2> Не удалось обновить данные </h2>
+        <p id="error-message"> Произошла ошибка. </p>
+    </section>
+    <!-- ================================= -->
+    <!-- Success -->
+    <!-- ================================= -->
+    <section id="success-state" class="state-message state-success" hidden >
+        <p id="success-message"> Данные успешно обновлены. </p>
+    </section>
+    <!-- ================================= -->
+    <!-- Update form -->
+    <!-- ================================= -->
+    <section class="content-card">
+        <div class="card-header">
+            <h2> Данные пользователя </h2>
+            <p> Заполните поля, которые хотите изменить. </p>
+        </div>
+
+        <form id="update-user-form" class="user-form" >
+            <!-- ================================= -->
+            <!-- Username -->
+            <!-- ================================= -->
+            <div class="form-group">
+                <label for="username"> Username </label>
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    maxlength="125"
+                    placeholder="Введите имя пользователя"
+                >
+                <span id="username-error" class="field-error" ></span>
+            </div>
+            <!-- ================================= -->
+            <!-- Email -->
+            <!-- ================================= -->
+            <div class="form-group">
+                <label for="email"> Email </label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Введите email"
+                >
+                <span id="email-error" class="field-error" ></span>
+            </div>
+            <!-- ================================= -->
+            <!-- First name -->
+            <!-- ================================= -->
+            <div class="form-group">
+                <label for="first-name"> Имя </label>
+                <input
+                    id="first-name"
+                    name="first_name"
+                    type="text"
+                    autocomplete="given-name"
+                    placeholder="Введите имя"
+                >
+                <span id="first-name-error" class="field-error" ></span>
+            </div>
+            <!-- ================================= -->
+            <!-- Second name -->
+            <!-- ================================= -->
+            <div class="form-group">
+                <label for="second-name"> Фамилия </label>
+                <input
+                    id="second-name"
+                    name="second_name"
+                    type="text"
+                    autocomplete="family-name"
+                    placeholder="Введите фамилию"
+                >
+                <span id="second-name-error" class="field-error" ></span>
+            </div>
+            <!-- ================================= -->
+            <!-- Last name -->
+            <!-- ================================= -->
+            <div class="form-group">
+                <label for="last-name"> Отчество </label>
+                <input
+                    id="last-name"
+                    name="last_name"
+                    type="text"
+                    placeholder="Введите отчество"
+                >
+                <span id="last-name-error" class="field-error" ></span>
+            </div>
+            <!-- ================================= -->
+            <!-- Actions -->
+            <!-- ================================= -->
+            <div class="form-actions">
+                <a href="/dev/user" class="button button-secondary" > Отмена </a>
+
+                <button id="submit-button" type="submit" class="button" >
+                    Сохранить изменения
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+{% endblock main %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='/js/user_update.js') }}" ></script>
+{% endblock scripts %}

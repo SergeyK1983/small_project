@@ -1,0 +1,159 @@
+/* ==========================================
+   Accounts table
+   ========================================== */
+
+#accounts-content {
+    width: 100%;
+}
+
+
+#accounts-content .content-card {
+    width: 100%;
+}
+
+
+/* ==========================================
+   Table
+   ========================================== */
+
+#accounts-content .data-table {
+    min-width: 900px;
+}
+
+
+#accounts-content .data-table th,
+#accounts-content .data-table td {
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   Account ID
+   ========================================== */
+
+#accounts-content .data-table td:first-child {
+    font-family:
+        monospace;
+
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   Balance
+   ========================================== */
+
+#accounts-content .data-table td:nth-child(3) {
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   Operations link
+   ========================================== */
+
+.table-action-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+        6px
+        12px;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius: 6px;
+
+    color: #175cd3;
+
+    background: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+
+.table-action-link:hover {
+    background:
+        #f9fafb;
+
+    border-color:
+        #98a2b3;
+
+    color:
+        #1849a9;
+}
+
+
+/* ==========================================
+   Empty accounts
+   ========================================== */
+
+.empty-state {
+    padding:
+        40px
+        20px;
+
+    text-align: center;
+
+    color:
+        #667085;
+}
+
+
+.empty-state p {
+    margin: 0;
+}
+
+
+/* ==========================================
+   Responsive
+   ========================================== */
+
+@media (max-width: 900px) {
+
+    #accounts-content .table-wrapper {
+        overflow-x: auto;
+
+        -webkit-overflow-scrolling:
+            touch;
+    }
+
+}
+
+/* ==========================================
+   Page header actions
+   ========================================== */
+
+.page-header-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+@media (max-width: 600px) {
+
+    .page-header-actions {
+        width: 100%;
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+}

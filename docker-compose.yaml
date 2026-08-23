@@ -1,0 +1,89 @@
+x-default-system-settings: &default-settings
+  networks:
+    - small_project_network
+  restart: on-failure
+
+services:
+  postgres:
+    <<: *default-settings
+    container_name: postgres-18.1
+    image: postgres:18.1-bookworm
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${SMPR_POSTGRES_USER}
+      - POSTGRES_DB=${SMPR_POSTGRES_NAME}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    secrets:
+      - pg_password
+    ports:
+      - "35432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SMPR_POSTGRES_USER} -d ${SMPR_POSTGRES_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  
+  nginx:
+    <<: *default-settings
+    build:
+      dockerfile: Dockerfile
+      context: ./docker/nginx/
+    container_name: nginx_smp
+    image: nginx-smp:latest
+    volumes:
+      - ./src/static:/var/www/smp/static:ro
+    ports:
+      - "8090:80"
+    depends_on:
+      - project
+  
+  project:
+    <<: *default-settings
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: project_smp
+    env_file:
+      - .env
+    environment:
+      - SMPR_POSTGRES_PASS_FILE=/run/secrets/pg_password
+      - SMPR_POSTGRES_HOST=postgres 
+      - SMPR_POSTGRES_PORT=5432
+      - SMPR_PASSWORD_FILE=/run/secrets/app_secret
+      - SMPR_PRIVATE_KEY=/run/secrets/private_key
+      - SMPR_PUBLIC_KEY=/run/secrets/public_key
+      - SMPR_PAYMENT_PSW_FILE=/run/secrets/payment_secret
+      - SMPR_SECRETS_DIR=/run/
+    secrets:
+      - pg_password
+      - app_secret
+      - private_key
+      - public_key
+      - payment_secret    
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    name: small_project_n_db_data
+
+networks:
+  small_project_network:
+    name: small_project_network
+    driver: bridge
+
+secrets:
+  pg_password:
+    file: ./secrets/pg_password.txt
+  app_secret:
+    file: ./secrets/app_secret_key.txt
+  private_key:
+    file: ./secrets/private_key_ed25519.pem
+  public_key:
+    file: ./secrets/public_key_ed25519.pem
+  payment_secret:
+    file: ./secrets/payment_secret.txt

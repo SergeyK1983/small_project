@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Операции по счету</title>
+{% endblock title %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/profile_style.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/payments_style.css') }}" >
+{% endblock styles %}
+
+
+{% block main %}
+<main class="user-page">
+
+    <!-- ================================= -->
+    <!-- Header -->
+    <!-- ================================= -->
+    <header class="page-header">
+        <div class="page-header-content">
+            <h1> Операции по счету </h1>
+            <p id="account-info"> Загрузка данных... </p>
+        </div>
+
+        <a href="/dev/accounts" class="button button-secondary" > Мои счета </a>
+    </header>
+
+    <!-- ================================= -->
+    <!-- Loading -->
+    <!-- ================================= -->
+    <section
+        id="loading-state"
+        class="state-message"
+    >
+        <div class="loader"></div>
+        <p>
+            Загрузка операций...
+        </p>
+    </section>
+
+    <!-- ================================= -->
+    <!-- Error -->
+    <!-- ================================= -->
+    <section
+        id="error-state"
+        class="state-message state-error"
+        hidden
+    >
+
+        <h2> Не удалось загрузить операции </h2>
+        <p id="error-message"> Произошла ошибка. </p>
+
+        <button id="retry-button" type="button" class="button" >
+            Повторить
+        </button>
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- Payments content -->
+    <!-- ================================= -->
+
+    <div
+        id="payments-content"
+        hidden
+    >
+
+        <section class="content-card">
+            <div class="card-header">
+                <h2> История операций </h2>
+                <p> Список операций по выбранному счету </p>
+            </div>
+
+            <!-- ================================= -->
+            <!-- Account ID -->
+            <!-- ================================= -->
+            <div class="account-id-block">
+                <span class="account-id-label"> Счет: </span>
+                <span id="account-id" class="account-id-value" > — </span>
+            </div>
+
+            <!-- ================================= -->
+            <!-- Payments table -->
+            <!-- ================================= -->
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th> Дата </th>
+                            <th> Описание </th>
+                            <th> Сумма </th>
+                            <th> ID операции </th>
+                            <th> ID транзакции </th>
+                            <th> ID счета </th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="payments-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ================================= -->
+            <!-- Empty payments -->
+            <!-- ================================= -->
+            <div
+                id="empty-payments"
+                class="empty-state"
+                hidden
+            >
+                <p>
+                    По этому счету пока нет операций.
+                </p>
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock main %}
+
+
+{% block scripts %}
+    <script src="{{ url_for('static', path='js/payments.js') }}" ></script>
+{% endblock scripts %}
