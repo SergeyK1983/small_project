@@ -27,7 +27,7 @@ class Settings(BaseSettings, case_sensitive=True):
 
     # App
     APPLICATION: str = Field(alias="SMPR_APPLICATION")
-    ALLOWED_HOST: str = Field(alias="SMPR_ALLOWED_HOST")
+    ALLOWED_HOST: list[str] = Field(alias="SMPR_ALLOWED_HOST")
     SECRETS_DIR: str = Field(alias="SMPR_SECRETS_DIR", default="")
     ALLOW_ORIGINS: list[str] = Field(alias="SMPR_ALLOW_ORIGINS")
     ALLOW_HEADERS: list[str] = Field(alias="SMPR_ALLOW_HEADERS")
