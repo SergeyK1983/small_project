@@ -77,10 +77,16 @@ signature - SHA256 хеш подпись объекта
 - создать администратора командой `python -m src.cli createsuperuser admin admin`, в данном случае username=admin, password=admin
 - запуск `uvicorn src.main:app --host localhost --port 8000`
 
-примечание:
-для запуска тестов локально в развернутом postgresql необходимо вручную создать БД с наименованием **test_db** и владельцем $SMPR_POSTGRES_USER
+примечания:
+1. для запуска тестов локально в развернутом postgresql необходимо вручную создать БД с наименованием **test_db** и владельцем $SMPR_POSTGRES_USER
+2. при варианте 1 будет автоматически создан администратор: username=admin, password=admin 
 
 #### Прочее
 домашняя страница - `{host}/dev`
 документация - `{host}/docs`
 административная панель - `{host}/admin-smp`
+
+Какое-то время будет развернут тут:
+https://ksm-small-project.ru/dev
+
+тут кроме стандартного администратора можно воспользоваться пользователем username=serg, password=Qwer1234!
